@@ -5,6 +5,8 @@ import Resident from "./components/Resident/Resident"
 import HouseHold from "./components/HouseHold/HouseHold"
 import Statistic from "./components/Statistic/Statistic"
 import Meeting from "./components/Meeting/Meeting"
+import AddMeeting from "./components/Meeting/AddMeeting"
+import EditMeeting from "./components/Meeting/EditMeeting"
 const { Header, Content, Sider } = Layout
 
 function getItem(label, key, icon, children) {
@@ -92,6 +94,16 @@ const App = () => {
           {menuKey === "4" && (
             <div>
               <Meeting />
+            </div>
+          )}
+          {menuKey === "41" && (
+            <div>
+              <AddMeeting />
+            </div>
+          )}
+          {menuKey === "42" && (
+            <div>
+              <EditMeeting />
             </div>
           )}
         </Content>
