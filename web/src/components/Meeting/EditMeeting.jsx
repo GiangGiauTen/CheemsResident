@@ -91,7 +91,7 @@ const data = [
   },
 ];
 
-function EditMeeting() {
+const EditMeeting = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -100,7 +100,7 @@ function EditMeeting() {
   const [editParticipants, setEditParticipants] = useState([]);
 
   // Hàm tìm kiếm cuộc họp
-  function searchMeetings() {
+  const searchMeetings = () => {
     // Thực hiện tìm kiếm trong danh sách cuộc họp
     const results = data.filter(
       (meeting) =>
@@ -109,56 +109,26 @@ function EditMeeting() {
     );
 
     setSearchResults(results);
-  }
+  };
 
   // Hàm xử lý khi người dùng nhấn nút "Sửa"
-  function handleEdit(index) {
+  const handleEdit = (index) => {
     setSelectedIndex(index);
     setEditMeeting(searchResults[index]);
     setEditParticipants(searchResults[index].participants);
     setModalVisible(true);
-  }
+  };
 
   // Hàm cập nhật giá trị sửa
-  function updateEditValue(field, value) {
+  const updateEditValue = (field, value) => {
     setEditMeeting((prevMeeting) => ({
       ...prevMeeting,
       [field]: value,
     }));
-  }
-
-  // Hàm thêm người tham gia
-  function addParticipant() {
-    const newParticipant = {
-      id: Math.random().toString(),
-      name: '',
-      birthdate: null,
-      gender: '',
-    };
-
-    setEditParticipants((prevParticipants) => [...prevParticipants, newParticipant]);
-  }
-
-  // Hàm cập nhật thông tin người tham gia
-  function updateParticipantValue(index, field, value) {
-    setEditParticipants((prevParticipants) => {
-      const updatedParticipants = [...prevParticipants];
-      updatedParticipants[index][field] = value;
-      return updatedParticipants;
-    });
-  }
-
-  // Hàm xóa người tham gia
-  function deleteParticipant(index) {
-    setEditParticipants((prevParticipants) => {
-      const updatedParticipants = [...prevParticipants];
-      updatedParticipants.splice(index, 1);
-      return updatedParticipants;
-    });
-  }
+  };
 
   // Hàm lưu giá trị sửa
-  function saveEditValue() {
+  const saveEditValue = () => {
     if (selectedIndex !== null) {
       const updatedResults = [...searchResults];
       updatedResults[selectedIndex] = {
@@ -169,7 +139,32 @@ function EditMeeting() {
     }
 
     setModalVisible(false);
-  }
+  };
+
+  // Hàm xóa cuộc họp
+  const handleDelete = (index) => {
+    const updatedResults = [...searchResults];
+    updatedResults.splice(index, 1);
+    setSearchResults(updatedResults);
+  };
+
+  // Hàm thêm người tham gia
+  const addParticipant = () => {
+    const newParticipant = {
+      id: String(editParticipants.length + 1),
+      name: '',
+      birthdate: '',
+      gender: '',
+    };
+    setEditParticipants((prevParticipants) => [...prevParticipants, newParticipant]);
+  };
+
+  // Hàm xóa người tham gia
+  const removeParticipant = (index) => {
+    const updatedParticipants = [...editParticipants];
+    updatedParticipants.splice(index, 1);
+    setEditParticipants(updatedParticipants);
+  };
 
   return (
     <div>
@@ -182,60 +177,61 @@ function EditMeeting() {
         Tìm kiếm
       </Button>
 
-      {searchResults.length > 0 && (
-        <Table dataSource={searchResults} rowKey="key">
-          <Column title="Mã cuộc họp" dataIndex="meetingCode" key="meetingCode" />
-          <Column title="Người tạo" dataIndex="creator" key="creator" />
-          <Column title="Nội dung" dataIndex="content" key="content" />
-          <Column title="Ngày" dataIndex="createdAt" key="createdAt" />
-          <Column title="Địa điểm" dataIndex="place" key="place" />
-          <Column
-            title="Danh sách người tham gia"
-            dataIndex="participants"
-            key="participants"
-            render={(participants) => (
-              <ul>
-                {participants.map((participant) => (
-                  <li key={participant.id}>{participant.name}</li>
-                ))}
-              </ul>
-            )}
-          />
-          <Column
-            title="Action"
-            key="action"
-            render={(_, record, index) => (
-              <div>
-                <Button onClick={() => handleEdit(index)}>Sửa</Button>
-              </div>
-            )}
-          />
-        </Table>
-      )}
+      <Table dataSource={searchResults} rowKey="key">
+        <Column title="Mã cuộc họp" dataIndex="meetingCode" key="meetingCode" />
+        <Column title="Người tạo" dataIndex="creator" key="creator" />
+        <Column title="Nội dung" dataIndex="content" key="content" />
+        <Column title="Địa điểm" dataIndex="place" key="place" />
+        <Column
+          title="Ngày diễn ra"
+          dataIndex="createdAt"
+          key="createdAt"
+          render={(text) => moment(text).format('YYYY-MM-DD')}
+        />
+        <Column
+          title="Thao tác"
+          key="action"
+          render={(_, record, index) => (
+            <Button type="link" onClick={() => handleEdit(index)}>
+              Sửa
+            </Button>
+          )}
+        />
+        <Column
+          title=""
+          key="action2"
+          render={(_, record, index) => (
+            <Button type="link" onClick={() => handleDelete(index)}>
+              Xóa
+            </Button>
+          )}
+        />
+      </Table>
 
       <Modal
-        title="Sửa thông tin cuộc họp"
+        title="Sửa cuộc họp"
         visible={modalVisible}
         onOk={saveEditValue}
         onCancel={() => setModalVisible(false)}
+        width={800}
       >
-        <Form labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+        <Form>
           <Form.Item label="Mã cuộc họp">
-            <Input value={editMeeting.meetingCode} disabled />
+            <Input
+              value={editMeeting.meetingCode}
+              onChange={(e) => updateEditValue('meetingCode', e.target.value)}
+            />
           </Form.Item>
           <Form.Item label="Người tạo">
-            <Input value={editMeeting.creator} disabled />
+            <Input
+              value={editMeeting.creator}
+              onChange={(e) => updateEditValue('creator', e.target.value)}
+            />
           </Form.Item>
           <Form.Item label="Nội dung">
             <Input
               value={editMeeting.content}
               onChange={(e) => updateEditValue('content', e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item label="Ngày">
-            <DatePicker
-              value={editMeeting.createdAt ? moment(editMeeting.createdAt) : null}
-              onChange={(date) => updateEditValue('createdAt', date)}
             />
           </Form.Item>
           <Form.Item label="Địa điểm">
@@ -244,55 +240,80 @@ function EditMeeting() {
               onChange={(e) => updateEditValue('place', e.target.value)}
             />
           </Form.Item>
-          <Form.Item label="Danh sách người tham gia">
+          <Form.Item label="Ngày diễn ra">
+            <DatePicker
+              value={moment(editMeeting.createdAt)}
+              onChange={(date) => updateEditValue('createdAt', date.format())}
+            />
+          </Form.Item>
+          <Form.Item label="Người tham gia">
             <Table
+              size="small"
+              bordered
               dataSource={editParticipants}
               rowKey="id"
               pagination={false}
-              size="small"
-              bordered
               columns={[
-                { title: 'Tên', dataIndex: 'name', key: 'name' },
-                { title: 'Ngày sinh', dataIndex: 'birthdate', key: 'birthdate' },
-                { title: 'Giới tính', dataIndex: 'gender', key: 'gender' },
                 {
-                  title: 'Action',
+                  title: 'Tên',
+                  dataIndex: 'name',
+                  key: 'name',
+                  render: (_, record, index) => (
+                    <Input
+                      value={record.name}
+                      onChange={(e) => {
+                        const updatedParticipants = [...editParticipants];
+                        updatedParticipants[index].name = e.target.value;
+                        setEditParticipants(updatedParticipants);
+                      }}
+                    />
+                  ),
+                },
+                {
+                  title: 'Ngày sinh',
+                  dataIndex: 'birthdate',
+                  key: 'birthdate',
+                  render: (_, record, index) => (
+                    <Input
+                      value={record.birthdate}
+                      onChange={(e) => {
+                        const updatedParticipants = [...editParticipants];
+                        updatedParticipants[index].birthdate = e.target.value;
+                        setEditParticipants(updatedParticipants);
+                      }}
+                    />
+                  ),
+                },
+                {
+                  title: 'Giới tính',
+                  dataIndex: 'gender',
+                  key: 'gender',
+                  render: (_, record, index) => (
+                    <Input
+                      value={record.gender}
+                      onChange={(e) => {
+                        const updatedParticipants = [...editParticipants];
+                        updatedParticipants[index].gender = e.target.value;
+                        setEditParticipants(updatedParticipants);
+                      }}
+                    />
+                  ),
+                },
+                {
+                  title: 'Hành động',
+                  dataIndex: 'action',
                   key: 'action',
                   render: (_, record, index) => (
-                    <Button type="link" onClick={() => deleteParticipant(index)}>
+                    <Button type="link" onClick={() => removeParticipant(index)}>
                       Xóa
                     </Button>
                   ),
                 },
               ]}
-              footer={() => (
-                <Button type="primary" onClick={addParticipant}>
-                  Thêm người tham gia
-                </Button>
-              )}
-              renderItem={(item, index) => (
-                <Table.Item>
-                  <Table.ItemCell>
-                    <Input
-                      value={item.name}
-                      onChange={(e) => updateParticipantValue(index, 'name', e.target.value)}
-                    />
-                  </Table.ItemCell>
-                  <Table.ItemCell>
-                    <DatePicker
-                      value={item.birthdate ? moment(item.birthdate) : null}
-                      onChange={(date) => updateParticipantValue(index, 'birthdate', date)}
-                    />
-                  </Table.ItemCell>
-                  <Table.ItemCell>
-                    <Input
-                      value={item.gender}
-                      onChange={(e) => updateParticipantValue(index, 'gender', e.target.value)}
-                    />
-                  </Table.ItemCell>
-                </Table.Item>
-              )}
             />
+            <Button type="dashed" onClick={addParticipant} style={{ marginTop: '10px' }}>
+              Thêm người tham gia
+            </Button>
           </Form.Item>
         </Form>
       </Modal>
