@@ -1,106 +1,244 @@
 import React from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table } from 'antd';
+import { Button, Input, Space, Table, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import ModalForm from './ModalForm';
+
 const data = [
   {
     key: '1',
-    name: 'John Brown',
+    name: 'Nguyễn Văn A',
     gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    birthDay: '14/05/1990',
+    homeTown: 'Hanoi',
+    dantoc: 'Kinh',
+    national: 'VietNam',
+    soCMt: '123456789',
+    tieuSu: [
+      {
+        tuNgay: '01/02/2002',
+        denNgay: '01/02/2022',
+        address: '443 Trường Chinh, Hà Nội',
+        workPlace: 'Sami',
+      },
+    ],
   },
   {
     key: '2',
-    name: 'Joe Black',
+    name: 'Trần Thị B',
     gender: 'female',
-    age: 42,
-    address: 'London No. 1 Lake Park',
+    birthDay: '22/09/1993',
+    homeTown: 'Ho Chi Minh City',
+    dantoc: 'Tây Ban Nha',
+    national: 'United States',
+    soCMt: '987654321',
+    tieuSu: [
+      {
+        tuNgay: '05/03/2010',
+        denNgay: '10/12/2021',
+        address: '789 Nguyễn Văn Linh, TP.HCM',
+        workPlace: 'ABC Corporation',
+      },
+    ],
   },
   {
     key: '3',
-    name: 'Jim Green',
+    name: 'Lê Văn C',
     gender: 'male',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
+    birthDay: '10/12/1978',
+    homeTown: 'Da Nang',
+    dantoc: 'Anglo-Saxon',
+    national: 'United Kingdom',
+    soCMt: '654321987',
+    tieuSu: [
+      {
+        tuNgay: '10/08/2000',
+        denNgay: '01/01/2022',
+        address: '123 Nguyễn Chí Thanh, Đà Nẵng',
+        workPlace: 'XYZ Company',
+      },
+    ],
   },
   {
     key: '4',
-    name: 'Jim Red',
+    name: 'Phạm Thị D',
     gender: 'female',
-    age: 32,
-    address: 'London No. 2 Lake Park',
+    birthDay: '05/07/1989',
+    homeTown: 'Hue',
+    dantoc: 'Pháp',
+    national: 'France',
+    soCMt: '789456123',
+    tieuSu: [
+      {
+        tuNgay: '01/06/2012',
+        denNgay: '01/12/2021',
+        address: '456 Trần Phú, Huế',
+        workPlace: 'DEF Corporation',
+      },
+    ],
   },
   {
     key: '5',
-    name: 'John Brown',
+    name: 'Nguyễn Văn E',
     gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    birthDay: '17/03/1992',
+    homeTown: 'Nha Trang',
+    dantoc: 'Ả Rập',
+    national: 'United Arab Emirates',
+    soCMt: '456789123',
+    tieuSu: [
+      {
+        tuNgay: '01/09/2015',
+        denNgay: '15/12/2020',
+        address: '789 Trần Hưng Đạo, Nha Trang',
+        workPlace: 'GHI Company',
+      },
+    ],
   },
   {
     key: '6',
-    name: 'John Brown',
-    gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    name: 'Trần Thị F',
+    gender: 'female',
+    birthDay: '29/11/1994',
+    homeTown: 'Hoi An',
+    dantoc: 'Australia',
+    national: 'Australia',
+    soCMt: '321654987',
+    tieuSu: [
+      {
+        tuNgay: '01/12/2010',
+        denNgay: '01/09/2021',
+        address: '987 Lý Thường Kiệt, Hội An',
+        workPlace: 'JKL Corporation',
+      },
+    ],
   },
   {
     key: '7',
-    name: 'John Brown',
+    name: 'Phan Văn G',
     gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    birthDay: '18/08/1987',
+    homeTown: 'Ha Long',
+    dantoc: 'Ai Cập',
+    national: 'Egypt',
+    soCMt: '852963741',
+    tieuSu: [
+      {
+        tuNgay: '10/05/2004',
+        denNgay: '01/03/2022',
+        address: '369 Quang Trung, Hạ Long',
+        workPlace: 'MNO Corporation',
+      },
+    ],
   },
   {
-    key: '1',
-    name: 'John Brown',
-    gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    key: '8',
+    name: 'Đặng Thị H',
+    gender: 'female',
+    birthDay: '07/02/1989',
+    homeTown: 'Vung Tau',
+    dantoc: 'Hán',
+    national: 'China',
+    soCMt: '369258147',
+    tieuSu: [
+      {
+        tuNgay: '01/01/2008',
+        denNgay: '01/10/2021',
+        address: '147 Nguyễn An Ninh, Vũng Tàu',
+        workPlace: 'PQR Corporation',
+      },
+    ],
   },
   {
-    key: '1',
-    name: 'John Brown',
-    gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    key: '9',
+    name: 'Nguyễn Thị I',
+    gender: 'female',
+    birthDay: '25/06/1991',
+    homeTown: 'Sapa',
+    dantoc: 'Ý',
+    national: 'Italy',
+    soCMt: '147852369',
+    tieuSu: [
+      {
+        tuNgay: '01/03/2010',
+        denNgay: '01/11/2021',
+        address: '258 Cầu Mây, Sa Pa',
+        workPlace: 'STU Company',
+      },
+    ],
   },
   {
-    key: '1',
-    name: 'John Brown',
+    key: '10',
+    name: 'Lê Văn J',
     gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    birthDay: '02/11/1995',
+    homeTown: 'Hai Phong',
+    dantoc: 'Đức',
+    national: 'Germany',
+    soCMt: '963852741',
+    tieuSu: [
+      {
+        tuNgay: '01/09/2015',
+        denNgay: '01/01/2022',
+        address: '741 Lạch Tray, Hải Phòng',
+        workPlace: 'VWX Corporation',
+      },
+    ],
   },
   {
-    key: '1',
-    name: 'John Brown',
+    key: '11',
+    name: 'Trần Văn K',
     gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    birthDay: '09/04/1986',
+    homeTown: 'Can Tho',
+    dantoc: 'Tây Ban Nha',
+    national: 'Spain',
+    soCMt: '741852963',
+    tieuSu: [
+      {
+        tuNgay: '01/04/2012',
+        denNgay: '01/02/2022',
+        address: '852 Cách Mạng Tháng 8, Cần Thơ',
+        workPlace: 'YZX Corporation',
+      },
+    ],
   },
   {
-    key: '1',
-    name: 'John Brown',
-    gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '1',
-    name: 'John Brown',
-    gender: 'male',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
+    key: '12',
+    name: 'Nguyễn Thị L',
+    gender: 'female',
+    birthDay: '12/07/1990',
+    homeTown: 'Dalat',
+    dantoc: 'Ấn Độ',
+    national: 'India',
+    soCMt: '258963147',
+    tieuSu: [
+      {
+        tuNgay: '01/06/2010',
+        denNgay: '01/03/2022',
+        address: '963 Phan Đình Phùng, Đà Lạt',
+        workPlace: 'XYZ Company',
+      },
+    ],
   },
 ];
 const Resident = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const [modalName, setModalName] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const searchInput = useRef(null);
+  // Hàm xử lý khi người dùng nhấn nút "Sửa"
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+  const handleRowClick = record => {
+    setSelectedRowData(record);
+    setIsModalVisible(true);
+  };
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -224,15 +362,17 @@ const Resident = () => {
       key: 'name',
       width: '30%',
       ...getColumnSearchProps('name'),
-      onCell: record => {
-        return {
-          onClick: () => {
-            // Thực hiện hành động khi bấm vào tên
-            <ModalForm form={'<Create_Form />'} title="Creat your teams" />;
-            // Gọi hàm khác hoặc thực hiện các thao tác khác tại đây
-          },
-        };
-      },
+      render: (_, record, index) => (
+        <div
+          onClick={() => {
+            setModalName(record.name);
+          }}>
+          {record.name}
+        </div>
+        // <Button type="link" onClick={() => console.log(record.name)}>
+        //   ok
+        // </Button>
+      ),
     },
     {
       title: 'Gender',
@@ -252,23 +392,93 @@ const Resident = () => {
       width: '20%',
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Birth Day',
+      dataIndex: 'birthDay',
+      key: 'birthDay',
       width: '20%',
-      ...getColumnSearchProps('age'),
-      sorter: (a, b) => a.age - b.age,
+      ...getColumnSearchProps('birthDay'),
+
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-      ...getColumnSearchProps('address'),
-      sorter: (a, b) => a.address.length - b.address.length,
+      title: 'homeTown',
+      dataIndex: 'homeTown',
+      key: 'homeTown',
+      ...getColumnSearchProps('homeTown'),
+      sorter: (a, b) => a.homeTown.length - b.homeTown.length,
       sortDirections: ['descend', 'ascend'],
     },
   ];
-  return <Table columns={columns} dataSource={data} />;
+  return (
+    <div>
+      <Table
+        columns={columns}
+        dataSource={data}
+        onRow={record => ({ onClick: () => handleRowClick(record) })}
+      />
+      <Modal
+        title="Thông tin cơ bản"
+        visible={isModalVisible}
+        onCancel={handleModalClose}
+        footer={null}>
+        {selectedRowData && (
+          <div>
+            <p>
+              <strong>Họ tên:</strong> {selectedRowData.name}
+            </p>
+            <p>
+              <strong>Năm sinh:</strong> {selectedRowData.age}
+            </p>
+            <p>
+              <strong>Giới tính:</strong> {selectedRowData.gender}
+            </p>
+            <p>
+              <strong>Nguyên quán:</strong> {selectedRowData.homeTown}
+            </p>
+            <p>
+              <strong>Dân tộc:</strong> {selectedRowData.dantoc}
+            </p>
+            <p>
+              <strong>Tôn giáo:</strong>
+            </p>
+            <p>
+              <strong>Quốc tịch:</strong>
+              {selectedRowData.national}
+            </p>
+            <p>
+              <strong>Số CMT:</strong>
+              {selectedRowData.soCMt}
+            </p>
+            <Table
+              columns={[
+                {
+                  title: 'Từ Ngày',
+                  dataIndex: 'tuNgay',
+                  key: 'tuNgay',
+                },
+                {
+                  title: 'Đến Ngày',
+                  dataIndex: 'denNgay',
+                  key: 'denNgay',
+                },
+                {
+                  title: 'Địa chỉ',
+                  dataIndex: 'address',
+                  key: 'address',
+                },
+                {
+                  title: 'Nơi làm việc',
+                  dataIndex: 'workPlace',
+                  key: 'workPlace',
+                },
+              ]}
+              dataSource={selectedRowData.tieuSu}
+              pagination={false}
+            />
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
 };
 export default Resident;
