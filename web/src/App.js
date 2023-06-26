@@ -6,6 +6,8 @@ import {
 } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
+import AddMeeting from './components/Meeting/AddMeeting';
+import EditMeeting from './components/Meeting/EditMeeting';
 import Resident from './components/Resident/Resident';
 import HouseHold from './components/HouseHold/HouseHold';
 import TamTru from './components/Resident/TamTru/TamTru';
@@ -124,6 +126,16 @@ const App = () => {
           {menuKey === '4' && (
             <div>
               <Meeting />
+            </div>
+          )}
+          {menuKey === "41" && (
+            <div>
+              <AddMeeting />
+            </div>
+          )}
+          {menuKey === "42" && (
+            <div>
+              <EditMeeting />
             </div>
           )}
         </Content>
