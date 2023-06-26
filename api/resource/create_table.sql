@@ -153,11 +153,11 @@ CREATE TABLE `cuoc_hop` (
 -- 
 
 INSERT INTO `cuoc_hop` (`ID`, `maCuocHop`, `ngayHop`, `ngayTaoCuocHop`, `diaDiem`, `noiDung`, `idNguoiTaoCuocHop`) VALUES
-(17, 'CH001','2023-12-08','2019-12-08','Nhà văn hóa','Hop hoi phu nu', 1),
-(18, 'CH002','2023-12-09','2019-12-08','Nhà văn hóa','Phong chong covid', 1),
-(19, 'CH003','2023-12-07','2019-12-08','Nhà văn hóa','Xay nha van hoa', 1),
-(20, 'CH004','2023-12-03','2019-12-08','Nhà văn hóa','Noi dung', 1),
-(21, 'CH005','2023-12-02','2019-12-08','Nhà văn hóa','Noi dung', 1);
+(17, 'CH001','2023-12-08','2019-12-08','Nhà văn hóa','Hop hoi phu nu', 26),
+(18, 'CH002','2023-12-09','2019-12-08','Nhà văn hóa','Phong chong covid', 27),
+(19, 'CH003','2023-12-07','2019-12-08','Nhà văn hóa','Xay nha van hoa', 29),
+(20, 'CH004','2023-12-03','2019-12-08','Nhà văn hóa','Noi dung', 32),
+(21, 'CH005','2023-12-02','2019-12-08','Nhà văn hóa','Noi dung', 34);
 
 
 -- --------------------------------------------------------
@@ -579,7 +579,7 @@ ALTER TABLE `ho_khau`
 -- Các ràng buộc cho bảng `cuoc_hop`
 --
 ALTER TABLE `cuoc_hop`
-  ADD CONSTRAINT `cuoc_hop_ibfk_1` FOREIGN KEY (`idNguoiTaoCuocHop`) REFERENCES `users` (`ID`);
+  ADD CONSTRAINT `cuoc_hop_ibfk_1` FOREIGN KEY (`idNguoiTaoCuocHop`) REFERENCES `nhan_khau` (`ID`);
 
 --
 -- Các ràng buộc cho bảng `khai_tu`

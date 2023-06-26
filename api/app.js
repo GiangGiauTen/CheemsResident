@@ -13,13 +13,14 @@ const connection = mysql.createConnection({
   password: "",
   database: "cheemsresident",
 })
-
 // Import your route files
-//const usersRoute = require("./routers/users")
+const residentRoute = require("./routers/resident")
+const meetingRoute = require("./routers/meeting")
 // Import other route files as needed
 
 // Use the route files
-//app.use("/api/users", usersRoute(connection))
+app.use("/api/resident", residentRoute(connection))
+app.use("/api/meeting", meetingRoute(connection))
 // Use other route files as needed
 
 // Start the server
