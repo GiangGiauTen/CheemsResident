@@ -392,12 +392,12 @@ const Resident = () => {
       width: '20%',
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Birth Day',
+      dataIndex: 'birthDay',
+      key: 'birthDay',
       width: '20%',
-      ...getColumnSearchProps('age'),
-      sorter: (a, b) => a.age - b.age,
+      ...getColumnSearchProps('birthDay'),
+
       sortDirections: ['descend', 'ascend'],
     },
     {
