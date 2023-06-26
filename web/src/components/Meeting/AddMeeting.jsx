@@ -1,104 +1,89 @@
-import React, { useState } from 'react';
-import { Form, Input, DatePicker, Button, Table,Radio } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-// import 'antd/dist/antd.css';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, DatePicker, Button, Table, Select } from 'antd';
+import axios from 'axios'
+
 const { TextArea } = Input;
 
 const AddMeeting = () => {
   const [form] = Form.useForm();
   const [members, setMembers] = useState([]);
+  const [residentData, setResidentData] = useState([])
+  const [selectedResident, setSelectedResident] = useState([])
+  const [hostId, setHostId] = useState(null)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4001/api/resident/');
+        if (response.status === 200) {
+          const resData = response.data.map(e => { e['key'] = e['ID']; return e });
+          setResidentData(resData)
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const handleAddRow = () => {
-    setMembers([...members, {}]);
-  };
-
-  const handleDeleteRow = (index) => {
-    const updatedMembers = [...members];
-    updatedMembers.splice(index, 1);
-    setMembers(updatedMembers);
-  };
-const [gender,setGender] = useState([]);
-
-  const handleGenderChange = (e) => {
-    console.log('radio checked', e.target.value);
-    setGender(e.target.value);
-  };
   const columns = [
     {
-      title: 'Họ tên',
-      dataIndex: 'name',
-      render: (_, record, index) => (
-        <Form.Item name={['members', index, 'name']} noStyle>
-          <Input placeholder="Nhập họ tên" />
-        </Form.Item>
-      ),
+      title: 'Họ và tên',
+      dataIndex: 'hoTen',
     },
     {
       title: 'Ngày sinh',
-      dataIndex: 'birthdate',
-      render: (_, record, index) => (
-        <Form.Item name={['members', index, 'birthdate']} noStyle>
-          <DatePicker format="YYYY-MM-DD" />
-        </Form.Item>
-      ),
+      dataIndex: 'namSinh',
     },
     {
       title: 'Giới tính',
-      dataIndex: 'gender',
-      render: (_, record, index) => (
-        <Form.Item name={['members', index, 'gender']} noStyle>
-          {/* <Input placeholder="Nhập giới tính" /> */}
-          <Radio.Group className="highlight-radio-group" onChange={handleGenderChange} value={gender}>
-                      <Radio value='male'>Nam</Radio>
-                      <Radio value='female'>Nữ</Radio>
-                    </Radio.Group>
-        </Form.Item>
-      ),
-    },
-    {
-      title: '',
-      dataIndex: 'action',
-      render: (_, record, index) => (
-        <Button type="link" danger onClick={() => handleDeleteRow(index)}>
-          Xóa
-        </Button>
-      ),
+      dataIndex: 'gioiTinh',
     },
   ];
 
-  const handleSubmit = (values) => {
-    console.log('Form values:', values);
-
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedResident(selectedRows)
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === 'Disabled User',
+      name: record.name,
+    }),
   };
+
+
   //fetch API cho Minh (Tôi quên lệnh rồi nên tôi ChatGPT bừa đấy :))
-//   const handleSubmit = async (values) => {
-//     try {
-//       const response = await fetch('https://example.com/api/meetings', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(values),
-//       });
-  
-//       if (response.ok) {
-//         console.log('Meeting added successfully');
-//         form.resetFields();
-//         setMembers([]);
-//       } else {
-//         console.error('Failed to add meeting');
-//       }
-//     } catch (error) {
-//       console.error('Error:', error);
-//     }
-//   };
+  const handleSubmit = async (values) => {
+    try {
+      values['idNguoiTaoCuocHop'] = hostId
+      values['nguoiThamGia'] = selectedResident
+      values['ngayHop'] = (new Date(values['meetingDate']['$d'])).toLocaleDateString('fr-CA')
+      console.log(values)
+      const response = await fetch('http://localhost:4001/api/meeting/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        console.log('Meeting added successfully');
+        form.resetFields();
+        setMembers([]);
+      } else {
+        console.error('Failed to add meeting');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <div>
       <h1>Thêm cuộc họp</h1>
       <Form form={form} onFinish={handleSubmit}>
         <Form.Item
-          name="meetingCode"
+          name="maCuocHop"
           label="Mã cuộc họp"
           rules={[{ required: true, message: 'Vui lòng nhập mã cuộc họp' }]}
         >
@@ -106,24 +91,42 @@ const [gender,setGender] = useState([]);
         </Form.Item>
 
         <Form.Item
-          name="meetingTime"
-          label="Thời gian"
+          name="meetingDate"
+          label="Ngày họp"
           rules={[{ required: true, message: 'Vui lòng chọn thời gian' }]}
         >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+          <DatePicker showTime format="YYYY-MM-DD HH:mm" />
         </Form.Item>
 
         <Form.Item
-          name="meetingLocation"
+          name="diaDiem"
           label="Địa điểm"
           rules={[{ required: true, message: 'Vui lòng nhập địa điểm' }]}
         >
           <Input placeholder="Nhập địa điểm" />
         </Form.Item>
 
-        <Form.Item name="meetingContent" label="Nội dung">
+        <Form.Item name="noiDung" label="Nội dung">
           <TextArea rows={4} placeholder="Nhập nội dung cuộc họp" />
         </Form.Item>
+
+        <Select
+          showSearch
+          placeholder="Chọn người chủ trì"
+          onChange={(target) => {
+            setHostId(target)
+          }}
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            (option ? option.label : "").toLowerCase().includes(input.toLowerCase())
+          }
+          options={selectedResident.map(e => {
+            return {
+              value: e['ID'],
+              label: e['hoTen']
+            }
+          })}
+        />
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
@@ -134,15 +137,12 @@ const [gender,setGender] = useState([]);
 
       <h2>Thành viên</h2>
       <Table
-        dataSource={members}
+        rowSelection={{
+          type: "checkbox",
+          ...rowSelection,
+        }}
         columns={columns}
-        pagination={false}
-        rowKey={(record, index) => index}
-        footer={() => (
-          <Button type="dashed" onClick={handleAddRow} block icon={<PlusOutlined />}>
-            Thêm dòng
-          </Button>
-        )}
+        dataSource={residentData}
       />
     </div>
   );

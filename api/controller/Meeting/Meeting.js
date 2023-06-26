@@ -34,6 +34,31 @@ function getAllMeeting(connection, callback) {
     },
   )
 }
+
+function createNewMeeting(body, connection) {
+  const { maCuocHop, ngayHop, diaDiem, noiDung, nguoiThamGia, idNguoiTaoCuocHop } = body
+
+  const ngayTaoCuocHop = new Date().toLocaleDateString("fr-CA")
+  connection.query(
+    "INSERT INTO `cuoc_hop` (`maCuocHop`, `ngayHop`, `ngayTaoCuocHop`, `diaDiem`, `noiDung`, `idNguoiTaoCuocHop`) VALUES(?,?,?,?,?,?)",
+    [maCuocHop, ngayHop, ngayTaoCuocHop, diaDiem, noiDung, idNguoiTaoCuocHop],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+      } else {
+        const idCuocHop = result.insertId // Retrieve the insertId value
+        nguoiThamGia.forEach((resident) => {
+          connection.query("INSERT INTO `tham_gia_cuoc_hop` (`idNhanKhau`, `idCuocHop`) VALUES(?, ?)", [
+            resident.ID,
+            idCuocHop,
+          ])
+        })
+      }
+    },
+  )
+}
+
 module.exports = {
   getAllMeeting: getAllMeeting,
+  createNewMeeting: createNewMeeting,
 }
