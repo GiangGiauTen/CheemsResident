@@ -1,5 +1,5 @@
 const express = require("express")
-const { getAllMeeting } = require("../controller/Meeting/Meeting.js")
+const { getAllMeeting, createNewMeeting } = require("../controller/Meeting/Meeting.js")
 
 const router = express.Router()
 
@@ -14,6 +14,11 @@ module.exports = (connection) => {
         res.status(200).json(result)
       }
     })
+  })
+
+  router.post("/", (req, res) => {
+    result = createNewMeeting(req.body, connection)
+    console.log(result)
   })
   return router
 }
