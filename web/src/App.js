@@ -16,6 +16,9 @@ import Add from './components/Resident/Add/Add';
 import KhaiTu from './components/Resident/KhaiTu/KhaiTu';
 import Statistic from './components/Statistic/Statistic';
 import Meeting from './components/Meeting/Meeting';
+import HouseHoldAdd from './components/HouseHold/HouseHoldAdd';
+import HouseHoldSplit from './components/HouseHold/HouseHoldSplit';
+import HouseHoldMove from './components/HouseHold/HouseHoldMove';
 const { Header, Content, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -116,6 +119,21 @@ const App = () => {
           {menuKey === '2' && (
             <div>
               <HouseHold />
+            </div>
+          )}
+          {menuKey === '21' && (
+            <div>
+              <HouseHoldAdd />
+            </div>
+          )}
+          {menuKey === '22' && (
+            <div>
+              <HouseHoldSplit />
+            </div>
+          )}
+          {menuKey === '23' && (
+            <div>
+              <HouseHoldMove />
             </div>
           )}
           {menuKey === '3' && (
