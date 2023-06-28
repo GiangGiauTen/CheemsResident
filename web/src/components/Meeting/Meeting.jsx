@@ -1,103 +1,30 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Input, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-
+import axios from 'axios';
 const { Search } = Input;
-
-const data = [
-  {
-    key: '1',
-    meetingCode: 'ABC123',
-    creator: 'Thua Cay',
-    content: 'Trông rất quen mà anh không nhớ đến đây bao giờ',
-    createdAt: '2022-06-10',
-    place: 'Điểm đến cuối cùng',
-    participants: [
-      {
-        id: '1',
-        name: 'Trước khi em tồn tại',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-      {
-        id: '2',
-        name: 'Sober Song',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-      {
-        id: '3',
-        name: 'Xin lỗi',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-    ],
-  },
-  {
-    key: '2',
-    meetingCode: 'DEF456',
-    creator: 'Katarina du couteau',
-    content: 'Ám sát vua J3',
-    createdAt: '2022-06-12',
-    place: 'Trà đá hồ gươm',
-    participants: [
-      {
-        id: '1',
-        name: 'Trước khi em tồn tại',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-      {
-        id: '2',
-        name: 'Sober Song',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-      {
-        id: '3',
-        name: 'Xin lỗi',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-    ],
-  },
-  {
-    key: '3',
-    meetingCode: 'GHI789',
-    creator: 'Ayame Nakiri',
-    content: 'Docchi Docchi Yodayo Ojou-sama',
-    createdAt: '2022-06-08',
-    place: 'Hóa ra em ở đây',
-    participants: [
-      {
-        id: '1',
-        name: 'Trước khi em tồn tại',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-      {
-        id: '2',
-        name: 'Sober Song',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-      {
-        id: '3',
-        name: 'Xin lỗi',
-        birthdate: '01/02/2002',
-        gender: 'Nam',
-      },
-    ],
-  },
-];
-
 const Meeting = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [data, setData] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4001/api/meeting/');
+        if (response.status === 200){
+          const resData = response.data;
+          setData(resData)
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
+    fetchData();
+  }, []);
   const handleSearch = (value) => {
     setSearchText(value);
   };
@@ -114,23 +41,24 @@ const Meeting = () => {
   const columns = [
     {
       title: 'Mã cuộc họp',
-      dataIndex: 'meetingCode',
+      dataIndex: 'maCuocHop',
       sorter: (a, b) => a.meetingCode.localeCompare(b.meetingCode),
       sortDirections: ['ascend', 'descend'],
     },
     {
       title: 'Người tạo',
-      dataIndex: 'creator',
+      dataIndex: 'hoTen',
     },
     {
       title: 'Nội dung chính',
-      dataIndex: 'content',
+      dataIndex: 'noiDung',
     },
     {
       title: 'Ngày tạo',
-      dataIndex: 'createdAt',
+      dataIndex: 'ngayTaoCuocHop',
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       sortDirections: ['ascend', 'descend'],
+      render: (date) => (new Date(date)).toLocaleDateString("vi-VN")
     },
   ];
 
@@ -159,19 +87,19 @@ const Meeting = () => {
         {selectedRowData && (
           <div>
             <p>
-              <strong>Mã cuộc họp:</strong> {selectedRowData.meetingCode}
+              <strong>Mã cuộc họp:</strong> {selectedRowData.maCuocHop}
             </p>
             <p>
-              <strong>Người tạo:</strong> {selectedRowData.creator}
+              <strong>Người tạo:</strong> {selectedRowData.hoTen}
             </p>
             <p>
-              <strong>Nội dung:</strong> {selectedRowData.content}
+              <strong>Nội dung:</strong> {selectedRowData.noiDung}
             </p>
             <p>
-              <strong>Ngày tạo:</strong> {selectedRowData.createdAt}
+              <strong>Ngày tạo:</strong> {(new Date(selectedRowData.ngayTaoCuocHop)).toLocaleDateString("vi-VN")}
             </p>
             <p>
-              <strong>Địa điểm:</strong> {selectedRowData.place}
+              <strong>Địa điểm:</strong> {selectedRowData.diaDiem}
             </p>
             <p>
               <strong>Người tham gia:</strong>
@@ -180,21 +108,22 @@ const Meeting = () => {
               columns={[
                 {
                   title: 'Tên',
-                  dataIndex: 'name',
+                  dataIndex: 'hoTen',
                   key: 'name',
                 },
                 {
                   title: 'Ngày sinh',
-                  dataIndex: 'birthdate',
+                  dataIndex: 'namSinh',
                   key: 'birthdate',
+                  render: (date) => (new Date(date)).toLocaleDateString("vi-VN")
                 },
                 {
                   title: 'Giới tính',
-                  dataIndex: 'gender',
+                  dataIndex: 'gioiTinh',
                   key: 'gender',
                 },
               ]}
-              dataSource={selectedRowData.participants}
+              dataSource={selectedRowData['nguoiThamGia']}
               pagination={false}
             />
           </div>
