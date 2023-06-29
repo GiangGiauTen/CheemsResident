@@ -65,3 +65,6 @@ function AddNewResident(body, connection) {
   })
   return true
 }
+module.exports = {
+  AddNewResident: AddNewResident,
+}

@@ -1,42 +1,8 @@
 import React from 'react';
-import { Button, Form, Input, Select, DatePicker } from 'antd';
+import { Button, Form, Input, InputNumber, Select, DatePicker } from 'antd';
 import { useState } from 'react';
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-const residences = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    children: [
-      {
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [
-          {
-            value: 'xihu',
-            label: 'West Lake',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    children: [
-      {
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [
-          {
-            value: 'zhonghuamen',
-            label: 'Zhong Hua Men',
-          },
-        ],
-      },
-    ],
-  },
-];
+
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -52,18 +18,6 @@ const formItemLayout = {
     },
     sm: {
       span: 16,
-    },
-  },
-};
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
     },
   },
 };
@@ -132,173 +86,205 @@ const Add = () => {
       form={form}
       name="register"
       onFinish={onFinish}
-      initialValues={{
-        residence: ['zhejiang', 'hangzhou', 'xihu'],
-        prefix: '86',
-      }}
       style={{
         maxWidth: 600,
       }}
       scrollToFirstError>
       <Form.Item
-        name="Name"
-        label="Name"
-        tooltip="What do you want others to call you?"
+        name="hoTen"
+        label="Họ và tên"
+        placeholder="Hãy nhập tên đầy đủ của bạn"
         rules={[
           {
             required: true,
-            message: 'Please input your nickname!',
+            message: 'Hãy nhập tên đầy đủ của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
-      <Form.Item name="Other Name" label="Other Name(if any)">
+      <Form.Item name="bietDanh" label="Tên khác (nếu có)">
         <Input />
       </Form.Item>
       <Form.Item
-        name="date-picker"
-        label="Date of birth"
+        name="namSinh"
+        label="Ngày tháng năm sinh"
         rules={[
-          { type: 'object', required: true, message: 'Please select time!' },
+          { type: 'object', required: true, message: 'Hãy nhập ngày tháng năm sinh' },
         ]}>
         <DatePicker />
       </Form.Item>
       <Form.Item
-        name="gender"
-        label="Gender"
+        name="gioiTinh"
+        label="Giới tính"
         rules={[{ required: true, message: 'Please select gender!' }]}>
-        <Select placeholder="select your gender">
-          <Option value="male">Male</Option>
-          <Option value="female">Female</Option>
-          <Option value="other">Other</Option>
+        <Select placeholder="Hãy chọn giới tính của bạn">
+          <Option value="Nam">Nam</Option>
+          <Option value="Nữ">Nữ</Option>
+          <Option value="Khác">Khác</Option>
         </Select>
       </Form.Item>
       <Form.Item
-        name="place of birth"
-        label="Place of Birth"
+        name="noiSinh"
+        label="Nơi sinh"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="nguyenQuan"
+        label="Nguyên quán"
         rules={[
           {
             required: true,
-            message: 'Please input your place!',
+            message: 'Hãy nhập nguyên quán của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="Religion"
-        label="Religion"
+        name="tonGiao"
+        label="Tôn Giáo"
         rules={[
           {
             required: true,
-            message: 'Please input your Religion!',
+            message: 'Hãy nhập tôn giáo của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="ethnic"
-        label="Ethnic"
+        name="quocTich"
+        label="Quốc tịch"
         rules={[
           {
             required: true,
-            message: 'Please input your ethnic!',
+            message: 'Hãy nhập quốc tịch của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="Nationality"
-        label="Nationality"
+        name="soHoChieu"
+        label="Hộ chiếu"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="soCMT"
+        label="Chứng minh thư/CCCD"
         rules={[
           {
             required: true,
-            message: 'Please input your Nationality',
+            message: 'Hãy nhập số chứng minh thư/CCCD',
+          },
+          { min: 9, message: 'Hãy nhập đủ các số trên Chứng minh thư/CCCD' },
+          {
+            pattern: /^[0-9]+$/,
+            message: 'Chứng minh thư/CCCD chỉ được chứa các ký tự số',
+          },
+        ]}>
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="noiThuongTru"
+        label="Địa chỉ thường trú"
+        rules={[
+          {
+            required: true,
+            message: 'Hãy điền địa chỉ thường trú của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="identity card number"
-        label="identity card number"
-        rules={[
-          // {
-          //   type: 'number',
-          //   message: 'The input is not valid CMT!',
-          // },
-          {
-            required: true,
-            message: 'Please input your identity card number!',
-          },
-        ]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="passport number" label="passport number">
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="Literacy"
-        label="Literacy"
+        name="diaChiHienNay"
+        label="Địa chỉ hiện tại"
         rules={[
           {
             required: true,
-            message: 'Please input your Literacy!',
+            message: 'Hãy điền địa chỉ hiện tại của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="Qualification"
-        label="Qualification"
+        name="trinhDoHocVan"
+        label="Trình độ học vấn"
         rules={[
           {
             required: true,
-            message: 'Please input your Qualification!',
+            message: 'Hãy điền trình độ học vấn của bạn',
+            whitespace: true,
+          },
+        ]}>
+        <Select placeholder="Hãy chọn trình độ học vấn của bạn">
+          <Option value="9/12">9/12</Option>
+          <Option value="12/12">12/12</Option>
+          <Option value="THCS">THCS</Option>
+          <Option value="THPT">THPT</Option>
+          <Option value="Trung cấp nghề/ Trung cấp chuyên nghiệp">Trung cấp nghề/ Trung cấp chuyên nghiệp</Option>
+          <Option value="Đại học/ Cao đẳng">Đại học/ Cao đẳng</Option>
+          <Option value="Cao học">Cao học</Option>
+          <Option value="Khác">Khác</Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="TrinhDoChuyenMon"
+        label="Trình độ chuyên môn"
+        rules={[
+          {
+            required: true,
+            message: 'Hãy nhập trình độ chuyên môn của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="Foreign language level"
-        label="Foreign language level"
+        name="trinhDoNgoaiNgu"
+        label="Trình độ ngoại ngữ"
         rules={[
           {
             required: true,
-            message: 'Please input your Literacy!',
+            message: 'Hãy nhập trình độ ngoại ngữ của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="Job"
-        label="Job"
+        name="ngheNghiep"
+        label="Nghề nghiệp"
         rules={[
           {
             required: true,
-            message: 'Please input your Job!',
+            message: 'Hãy nhập nghề nghiệp của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
       </Form.Item>
       <Form.Item
-        name="Workplace"
-        label="Workplace"
+        name="noiLamViec"
+        label="Nơi làm việc"
         rules={[
           {
             required: true,
-            message: 'Please input your Workplace!',
+            message: 'Hãy nhập nơi làm việc của bạn',
             whitespace: true,
           },
         ]}>
         <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Thêm
+        </Button>
       </Form.Item>
     </Form>
   );
