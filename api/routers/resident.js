@@ -1,5 +1,5 @@
 const express = require("express")
-const { AddNewResident } = require("../controller/Resident/AddNewResident.ts")
+const { AddNewResident } = require("../controller/Resident/AddNewResident.js")
 const { getAllResident } = require("../controller/Resident/Resident.js")
 const router = express.Router()
 
