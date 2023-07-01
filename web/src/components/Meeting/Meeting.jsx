@@ -644,11 +644,18 @@ const Meeting = () => {
           </div>
         )}
 
-        <Button
-          // onClick={}
-          style={{ marginTop: '10px' }}>
-          Xóa Nhóm
-        </Button>
+        <div>
+          <Button
+            // onClick={}
+            style={{ marginTop: '10px' }}>
+            Sửa Nhóm
+          </Button>
+          <Button
+            // onClick={}
+            style={{ marginTop: '10px' }}>
+            Xóa Nhóm
+          </Button>
+        </div>
       </Modal>
     </div>
   );
