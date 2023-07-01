@@ -210,7 +210,7 @@ CREATE TABLE `khai_tu` (
 --
 
 CREATE TABLE `nhan_khau` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `maNhanKhau` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `hoTen` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `bietDanh` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -430,7 +430,6 @@ ALTER TABLE `khai_tu`
 -- Chỉ mục cho bảng `nhan_khau`
 --
 ALTER TABLE `nhan_khau`
-  ADD PRIMARY KEY (`ID`),
   ADD KEY `idNguoiTao` (`idNguoiTao`),
   ADD KEY `idNguoiXoa` (`idNguoiXoa`);
 ALTER TABLE `nhan_khau` ADD FULLTEXT KEY `hoTen` (`hoTen`,`bietDanh`);
