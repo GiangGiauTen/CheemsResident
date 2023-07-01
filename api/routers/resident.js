@@ -1,6 +1,8 @@
 const express = require('express')
 const { AddNewResident } = require('../controller/Resident/AddNewResident.js')
 const { getAllResident } = require('../controller/Resident/Resident.js')
+const { CheckIdentityCard } = require('../controller/Resident/CheckIdentityCard.js')
+const { AbsentRegister } = require('../controller/Resident/AbsentRegister.js')
 const router = express.Router()
 
 module.exports = (connection) => {
@@ -14,7 +16,7 @@ module.exports = (connection) => {
 			res.status(500).json({ error: 'Internal server error' })
 		}
 	})
-
+	// GET /api/resident/
 	router.get('/', (req, res) => {
 		const result = getAllResident(connection, (error, result) => {
 			if (error) {
@@ -26,5 +28,14 @@ module.exports = (connection) => {
 		})
 	})
 
+	// POST /api/resident/checkIdentityCard
+	router.post('/checkIdentityCard', async (req, res) => {
+		await CheckIdentityCard(req.body, connection, res)
+	})
+
+	// POST /api/resident/absentRegister
+	router.post('/absentRegister', async (req, res) => {
+		await AbsentRegister(req.body, connection, res)
+	})
 	return router
 }
