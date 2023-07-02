@@ -11,6 +11,18 @@ async function AbsentRegister(body, connection, res) {
 		}
 	})
 }
+
+async function GetAllAbsentRegister(connection, res) {
+	const query1 = `SELECT * FROM tam_vang`
+	await connection.query(query1, [], (error, result) => {
+		if (error) {
+			console.log(error, result)
+		} else {
+			res.status(200).json(result)
+		}
+	})
+}
 module.exports = {
 	AbsentRegister: AbsentRegister,
+	GetAllAbsentRegister: GetAllAbsentRegister,
 }
