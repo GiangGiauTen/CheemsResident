@@ -270,9 +270,11 @@ INSERT INTO `nhan_khau` (`ID`, `maNhanKhau`, `hoTen`, `bietDanh`, `namSinh`, `gi
 --
 
 CREATE TABLE `tam_tru` (
-  `ID` int(11) NOT NULL,
-  `idNhanKhau` int(11) DEFAULT NULL,
+  `ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `hoTen` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `soCmt` int(11) DEFAULT NULL,
   `maGiayTamtru` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `diaChiTamTru` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `soDienThoaiNguoiDangKy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tuNgay` date NOT NULL,
   `denNgay` date NOT NULL,
@@ -286,7 +288,7 @@ CREATE TABLE `tam_tru` (
 --
 
 CREATE TABLE `tam_vang` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `idNhanKhau` int(11) DEFAULT NULL,
   `maGiayTamVang` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `noiTamtru` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -435,20 +437,6 @@ ALTER TABLE `nhan_khau`
 ALTER TABLE `nhan_khau` ADD FULLTEXT KEY `hoTen` (`hoTen`,`bietDanh`);
 
 --
--- Chỉ mục cho bảng `tam_tru`
---
-ALTER TABLE `tam_tru`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `idNhanKhau` (`idNhanKhau`);
-
---
--- Chỉ mục cho bảng `tam_vang`
---
-ALTER TABLE `tam_vang`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `idNhanKhau` (`idNhanKhau`);
-
---
 -- Chỉ mục cho bảng `thanh_vien_cua_ho`
 --
 ALTER TABLE `thanh_vien_cua_ho`
@@ -522,18 +510,6 @@ ALTER TABLE `nhan_khau`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT cho bảng `tam_tru`
---
-ALTER TABLE `tam_tru`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT cho bảng `tam_vang`
---
-ALTER TABLE `tam_vang`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT cho bảng `tieu_su`
 --
 ALTER TABLE `tieu_su`
@@ -593,12 +569,6 @@ ALTER TABLE `khai_tu`
 ALTER TABLE `nhan_khau`
   ADD CONSTRAINT `nhan_khau_ibfk_1` FOREIGN KEY (`idNguoiTao`) REFERENCES `users` (`ID`),
   ADD CONSTRAINT `nhan_khau_ibfk_2` FOREIGN KEY (`idNguoiXoa`) REFERENCES `users` (`ID`);
-
---
--- Các ràng buộc cho bảng `tam_tru`
---
-ALTER TABLE `tam_tru`
-  ADD CONSTRAINT `tam_tru_ibfk_1` FOREIGN KEY (`idNhanKhau`) REFERENCES `nhan_khau` (`ID`);
 
 --
 -- Các ràng buộc cho bảng `tam_vang`
