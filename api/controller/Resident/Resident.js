@@ -4,11 +4,12 @@ async function getAllResident(connection, callback) {
       SELECT nhan_khau.*, chung_minh_thu.soCMT
       FROM nhan_khau
       JOIN chung_minh_thu ON nhan_khau.ID = chung_minh_thu.idNhanKhau
+      WHERE ghiChu is NULL
     `;
 
     const result = await executeQuery(connection, query1);
 
-    const promises = result.map(async (element) => {
+    const promises = result.map(async element => {
       const idNhanKhau = element.ID;
       const query2 = `
         SELECT tuNgay, denNgay, diaChi, ngheNghiep, noiLamViec
