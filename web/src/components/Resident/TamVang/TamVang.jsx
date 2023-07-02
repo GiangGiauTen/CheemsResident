@@ -1,210 +1,199 @@
-import React from 'react';
-import { Button, Form, Input, Select, DatePicker } from 'antd';
-import { useState } from 'react';
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const residences = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    children: [
-      {
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [
-          {
-            value: 'xihu',
-            label: 'West Lake',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    children: [
-      {
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [
-          {
-            value: 'zhonghuamen',
-            label: 'Zhong Hua Men',
-          },
-        ],
-      },
-    ],
-  },
-];
+import React, { useEffect } from 'react'
+import { Button, Form, Input, Select, DatePicker, message } from 'antd'
+import { useState } from 'react'
+import axios from 'axios'
+import API_URL from '../../../utils/config'
+import moment from 'moment'
+const { RangePicker } = DatePicker
+
 const formItemLayout = {
-  labelCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 8,
-    },
-  },
-  wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 16,
-    },
-  },
-};
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-  },
-};
-function TamVang() {
-  const [form] = Form.useForm();
-  const onFinish = values => {
-    // Gửi dữ liệu đi hoặc xử lý dữ liệu ở đây
-    console.log('Received values of form: ', values);
-    // Ví dụ: gửi dữ liệu đi qua API
-    fetch('https://example.com/submit', {
-      method: 'POST',
-      body: JSON.stringify(values),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Xử lý kết quả nếu cần
-        console.log(data);
-      })
-      .catch(error => {
-        // Xử lý lỗi nếu có
-        console.error('Error:', error);
-      });
-  };
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}>
-        <Option value="86">+86</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    </Form.Item>
-  );
-  const suffixSelector = (
-    <Form.Item name="suffix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}>
-        <Option value="USD">$</Option>
-        <Option value="CNY">¥</Option>
-      </Select>
-    </Form.Item>
-  );
-  const [autoCompleteResult, setAutoCompleteResult] = useState([]);
-  const onWebsiteChange = value => {
-    if (!value) {
-      setAutoCompleteResult([]);
-    } else {
-      setAutoCompleteResult(
-        ['.com', '.org', '.net'].map(domain => `${value}${domain}`),
-      );
-    }
-  };
-  const websiteOptions = autoCompleteResult.map(website => ({
-    label: website,
-    value: website,
-  }));
-  return (
-    <Form
-      {...formItemLayout}
-      form={form}
-      name="register"
-      onFinish={onFinish}
-      initialValues={{
-        residence: ['zhejiang', 'hangzhou', 'xihu'],
-        prefix: '86',
-      }}
-      style={{
-        maxWidth: 600,
-      }}
-      scrollToFirstError>
-      <Form.Item
-        name="identity card number"
-        label="identity card number"
-        rules={[
-          // {
-          //   type: 'number',
-          //   message: 'The input is not valid CMT!',
-          // },
-          {
-            required: true,
-            message: 'Please input your identity card number!',
-          },
-        ]}>
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="temporarily absent code"
-        label="temporarily absent code"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your temporarily absent code!',
-          },
-        ]}>
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="temporary place "
-        label="temporary place"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your temporary place!',
-          },
-        ]}>
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="range-picker"
-        label="RangePicker"
-        rules={[
-          { type: 'array', required: true, message: 'Please select time!' },
-        ]}>
-        <RangePicker />
-      </Form.Item>
-
-      <Form.Item
-        name="Reason"
-        label="Reason"
-        rules={[
-          {
-            required: true,
-            message: 'Please input Reason',
-          },
-        ]}>
-        <Input.TextArea showCount maxLength={100} />
-      </Form.Item>
-
-      <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
-          Register
-        </Button>
-      </Form.Item>
-    </Form>
-  );
+	labelCol: {
+		xs: {
+			span: 24,
+		},
+		sm: {
+			span: 8,
+		},
+	},
+	wrapperCol: {
+		xs: {
+			span: 24,
+		},
+		sm: {
+			span: 16,
+		},
+	},
 }
-export default TamVang;
+const FormatDate = (inputDate) => {
+	const date = new Date(inputDate)
+	const year = date.getFullYear()
+	const month = String(date.getMonth() + 1).padStart(2, '0')
+	const day = String(date.getDate()).padStart(2, '0')
+	return `${year}-${month}-${day}`
+}
+const tailFormItemLayout = {
+	wrapperCol: {
+		xs: {
+			span: 24,
+			offset: 0,
+		},
+		sm: {
+			span: 16,
+			offset: 8,
+		},
+	},
+}
+function TamVang() {
+	const [form] = Form.useForm()
+	const [cmt, setCmt] = useState('')
+	const [residentId, setResidentId] = useState(-1)
+	const [displayName, setDisplayName] = useState('')
+	const [inputStatus, setInputStatus] = useState(true)
+
+	useEffect(() => {
+		form.validateFields(['CMT'])
+	}, [inputStatus])
+
+	const onFinish = (values) => {
+		values['idNhanKhau'] = residentId
+		values['tuNgay'] = FormatDate(values['range-picker'][0]['$d'])
+		values['denNgay'] = FormatDate(values['range-picker'][1]['$d'])
+		fetch(`${API_URL}/resident/absentRegister`, {
+			method: 'POST',
+			body: JSON.stringify(values),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.message) {
+					message.success(data.message, 2, () => {
+						form.resetFields()
+					})
+				} else {
+					message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => {})
+				}
+			})
+			.catch((error) => {
+				message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => {})
+			})
+	}
+
+	return (
+		<Form
+			{...formItemLayout}
+			form={form}
+			name='register'
+			onFinish={onFinish}
+			style={{
+				maxWidth: 600,
+			}}
+			scrollToFirstError>
+			<Form.Item
+				name='CMT'
+				label='Số chứng minh thư'
+				rules={[
+					{
+						required: true,
+						message: 'Hãy nhập số chứng minh thư/CCCD',
+					},
+					{ min: 9, message: 'Hãy nhập đủ các số trên Chứng minh thư/CCCD' },
+					{
+						pattern: /^[0-9]+$/,
+						message: 'Chứng minh thư/CCCD chỉ được chứa các ký tự số',
+					},
+					{
+						validator: (_, value) => {
+							if (inputStatus) {
+								return Promise.resolve() // Validation succeeds
+							}
+							return Promise.reject(new Error('Không tìm thấy thông tin cư dân')) // Validation fails
+						},
+					},
+				]}>
+				<Input
+					onChange={(e) => {
+						setCmt(e.target.value)
+					}}
+				/>
+			</Form.Item>
+			<Button
+				style={{ margin: '0px auto 15px', display: 'block' }}
+				onClick={async () => {
+					try {
+						const res = await axios.post(`${API_URL}/resident/checkIdentityCard`, { chungMinhThu: cmt })
+						console.log(res)
+						if (res.status === 201) {
+							setResidentId(res.data[0].idNhanKhau)
+							setDisplayName(res.data[0].hoTen)
+							setInputStatus(true)
+						}
+					} catch (error) {
+						setResidentId(-1)
+						setDisplayName('')
+						setInputStatus(false)
+					}
+				}}>
+				Check
+			</Button>
+			{residentId && (
+				<Form.Item label='Họ và tên'>
+					<Input disabled value={displayName} />
+				</Form.Item>
+			)}
+			<Form.Item
+				name='maGiayTamVang'
+				label='Mã giấy tạm vắng'
+				rules={[
+					{
+						required: true,
+						message: 'Hãy điền mã giấy tạm vắng của bạn!',
+					},
+				]}>
+				<Input />
+			</Form.Item>
+
+			<Form.Item
+				name='noiTamTru'
+				label='Nơi chuyển đến'
+				rules={[
+					{
+						required: true,
+						message: 'Hãy nhập nơi mà bạn sẽ chuyển đến!',
+					},
+				]}>
+				<Input />
+			</Form.Item>
+			<Form.Item
+				name='range-picker'
+				label='Từ ngày → đến ngày'
+				rules={[{ type: 'array', required: true, message: 'Hãy chọn khoảng thời gian tạm vắng' }]}>
+				<RangePicker
+					disabledDate={(current) => {
+						return current.isBefore(moment())
+					}}
+				/>
+			</Form.Item>
+
+			<Form.Item
+				name='lyDo'
+				label='Lý do'
+				rules={[
+					{
+						required: true,
+						message: 'Hãy nhập lý do chuyển đi',
+					},
+				]}>
+				<Input.TextArea showCount maxLength={100} />
+			</Form.Item>
+
+			<Form.Item {...tailFormItemLayout}>
+				<Button type='primary' htmlType='submit'>
+					Đăng ký
+				</Button>
+			</Form.Item>
+		</Form>
+	)
+}
+export default TamVang

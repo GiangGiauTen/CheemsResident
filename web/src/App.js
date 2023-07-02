@@ -7,6 +7,7 @@ import {
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import AddMeeting from './components/Meeting/AddMeeting';
+import EditMeeting from './components/Meeting/EditMeeting';
 import Resident from './components/Resident/Resident';
 import HouseHold from './components/HouseHold/HouseHold';
 import TamTru from './components/Resident/TamTru/TamTru';
@@ -144,7 +145,7 @@ const App = () => {
               <Meeting />
             </div>
           )}
-          {menuKey === "41" && (
+          {menuKey === '41' && (
             <div>
               <AddMeeting />
             </div>

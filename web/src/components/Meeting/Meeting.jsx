@@ -20,61 +20,6 @@ const Meeting = () => {
       [field]: value,
     }));
   };
-  // Hàm lưu giá trị sửa
-  const saveEditValue = () => {
-    const updatedData = data.map(meeting => {
-      if (meeting.maCuocHop === selectedRowData.maCuocHop) {
-        return selectedRowData;
-      }
-      return meeting;
-    });
-    setData(updatedData);
-    setIsModalVisible(false);
-    setIsModalVisible2(false);
-  };
-  // Hàm xóa cuộc họp
-  const handleDelete = async (maCuocHop) => {
-    try {
-      // Gọi API xóa cuộc họp với mã cuộc họp (meetingId)
-      const response = await axios.delete(`http://localhost:4001/api/meeting/${maCuocHop}`);
-      if (response.status === 200) {
-        // Nếu API xóa thành công, cập nhật lại state của data (danh sách cuộc họp)
-        setData((prevData) => prevData.filter((meeting) => meeting.maCuocHop !== maCuocHop));
-        setIsModalVisible(false);
-        setIsModalVisible2(false);
-      } else {
-        console.error("Error deleting meeting", response.data.error);
-        // Xử lý hiển thị thông báo lỗi nếu cần thiết
-      }
-    } catch (error) {
-      console.error("Error deleting meeting", error);
-      // Xử lý hiển thị thông báo lỗi nếu cần thiết
-    }
-  };
-  
-
-  // Hàm thêm người tham gia
-  const addParticipant = () => {
-    const newParticipant = {
-      hoTen: '',
-      birthdate: '',
-      gioiTinh: '',
-    };
-    setSelectedRowData(prevMeeting => ({
-      ...prevMeeting,
-      nguoiThamGia: [...prevMeeting.nguoiThamGia, newParticipant],
-    }));
-  };
-
-  // Hàm xóa người tham gia
-  const removeParticipant = index => {
-    const updatedParticipants = [...selectedRowData.nguoiThamGia];
-    updatedParticipants.splice(index, 1);
-    setSelectedRowData(prevMeeting => ({
-      ...prevMeeting,
-      nguoiThamGia: updatedParticipants,
-    }));
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -364,3 +309,246 @@ const Meeting = () => {
 };
 
 export default Meeting;
+
+// Code này chứa cả search theo từng cột mà tui cop được ở chat gpt, nhưng chưa hiểu vsao search chung k hoạt động nên cứ đẻ đây:v
+// import React, { useState } from 'react';
+// import { Table, Input, Modal } from 'antd';
+// import { SearchOutlined } from '@ant-design/icons';
+// const { Search } = Input;
+// const data = [
+//   {
+//     key: '1',
+//     meetingCode: 'ABC123',
+//     creator: 'Thua Cay',
+//     content: 'Trông rất quen mà anh không nhớ đến đây bao giờ',
+//     createdAt: '2022-06-10',
+//     place: 'Điểm đến cuối cùng',
+//     nguoiThamGia: [
+//       {
+//         id:'1',
+//         hoTen: 'Trước khi em tồn tại',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//       {
+//         id:'2',
+//         hoTen: 'Sober Song',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//       {
+//         id:'3',
+//         hoTen: 'Xin lỗi',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//     ]
+//   },
+//   {
+//     key: '2',
+//     meetingCode: 'DEF456',
+//     creator: 'Katarina du couteau',
+//     content: 'Ám sát vua J3',
+//     createdAt: '2022-06-12',
+//     place: 'Trà đá hồ gươm',
+//     nguoiThamGia: [
+//       {
+//         id:'1',
+//         hoTen: 'Trước khi em tồn tại',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//       {
+//         id:'2',
+//         hoTen: 'Sober Song',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//       {
+//         id:'3',
+//         hoTen: 'Xin lỗi',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//     ],
+//   },
+//   {
+//     key: '3',
+//     meetingCode: 'GHI789',
+//     creator: 'Ayame Nakiri',
+//     content: 'Docchi Docchi Yodayo Ojou-sama',
+//     createdAt: '2022-06-08',
+//     place: 'Hóa ra em ở đây',
+//     nguoiThamGia: [
+//       {
+//         id:'1',
+//         hoTen: 'Trước khi em tồn tại',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//       {
+//         id:'2',
+//         hoTen: 'Sober Song',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//       {
+//         id:'3',
+//         hoTen: 'Xin lỗi',
+//         namSinh:'01/02/2002',
+//         gioiTinh:'Nam',
+//       },
+//     ],
+//   },
+// ];
+// const Meeting = () => {
+
+//   const [searchText, setSearchText] = useState('');
+//   const [searchedColumn, setSearchedColumn] = useState('');
+//   const [selectedRowData, setSelectedRowData] = useState(null);
+//   const [isModalVisible, setIsModalVisible] = useState(false);
+
+//   const handleSearch = (selectedKeys, confirm, dataIndex) => {
+//     confirm();
+//     setSearchText(selectedKeys[0]);
+//     setSearchedColumn(dataIndex);
+//   };
+
+//   const handleReset = (clearFilters) => {
+//     clearFilters();
+//     setSearchText('');
+//   };
+
+//   const getColumnSearchProps = (dataIndex) => ({
+//     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+//       <div style={{ padding: 8 }}>
+//         <Search
+//           placeholder={`Tìm kiếm ${dataIndex}`}
+//           value={selectedKeys[0]}
+//           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+//           onSearch={() => handleSearch(selectedKeys, confirm, dataIndex)}
+//           style={{ width: 188, marginBottom: 8, display: 'block' }}
+//         />
+//         <button type="button" onClick={() => handleReset(clearFilters)} style={{ width: 90, marginRight: 8 }}>
+//           Reset
+//         </button>
+//         <button type="button" onClick={() => confirm()} style={{ width: 90 }}>
+//           Filter
+//         </button>
+//       </div>
+//     ),
+//     filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+//     onFilter: (value, record) => {
+//       const columnData = record[dataIndex].toString().toLowerCase();
+//       return columnData.includes(value.toLowerCase());
+//     },
+//   });
+
+//   const columns = [
+//     {
+//       title: 'Mã cuộc họp',
+//       dataIndex: 'meetingCode',
+//       sorter: (a, b) => a.meetingCode.localeCompare(b.meetingCode),
+//       sortDirections: ['ascend', 'descend'],
+//       // ...getColumnSearchProps('meetingCode'),
+//     },
+//     {
+//       title: 'Người tạo',
+//       dataIndex: 'creator',
+//     },
+//     {
+//       title: 'Nội dung chính',
+//       dataIndex: 'content',
+//     },
+//     {
+//       title: 'Ngày tạo',
+//       dataIndex: 'createdAt',
+//       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+//       sortDirections: ['ascend', 'descend'],
+//     },
+//   ];
+
+//   const onChange = (pagination, filters, sorter, extra) => {
+//     console.log('params', pagination, filters, sorter, extra);
+//   };
+
+//   const filteredData = searchText
+//     ? data.filter((record) =>
+//         Object.keys(record).some((key) =>
+//           record[key].toString().toLowerCase().includes(searchText.toLowerCase())
+//         )
+//       )
+//     : data;
+//     const handleRowClick = (record) => {
+//           setSelectedRowData(record);
+//           setIsModalVisible(true);
+//         };
+
+//         const handleModalClose = () => {
+//           setIsModalVisible(false);
+//         };
+
+//   return (
+//     <div>
+//       <Search
+//         placeholder="Tìm kiếm"
+//         value={searchText}
+//         onChange={(e) => setSearchText(e.target.value)}
+//         style={{ width: 200, marginBottom: 16 }}
+//       />
+//       <Table columns={columns} dataSource={data} onRow={(record) => ({ onClick: () => handleRowClick(record) })} />
+//       <Modal
+//         title="Thông tin cuộc họp"
+//         visible={isModalVisible}
+//         onCancel={handleModalClose}
+//         footer={null}
+//       >
+//         {selectedRowData && (
+//           <div>
+//             <p>
+//               <strong>Mã cuộc họp:</strong> {selectedRowData.meetingCode}
+//             </p>
+//             <p>
+//               <strong>Người tạo:</strong> {selectedRowData.creator}
+//             </p>
+//             <p>
+//               <strong>Nội dung:</strong> {selectedRowData.content}
+//             </p>
+//             <p>
+//               <strong>Ngày tạo:</strong> {selectedRowData.createdAt}
+//             </p>
+//             <p>
+//               <strong>Địa điểm:</strong> {selectedRowData.place}
+//             </p>
+//             <p>
+//               <strong>Người tham gia:</strong>
+//             </p>
+//             <Table
+//               columns={[
+//                 {
+//                   title: 'Tên',
+//                   dataIndex: 'hoTen',
+//                   key: 'hoTen',
+//                 },
+//                 {
+//                   title: 'Ngày sinh',
+//                   dataIndex: 'namSinh',
+//                   key: 'namSinh',
+//                 },
+//                 {
+//                   title: 'Giới tính',
+//                   dataIndex: 'gioiTinh',
+//                   key: 'gioiTinh',
+//                 },
+//               ]}
+//               dataSource={selectedRowData.nguoiThamGia}
+//               pagination={false}
+//             />
+//           </div>
+//         )}
+//       </Modal>
+//     </div>
+//   );
+// };
+
+// export default Meeting;
