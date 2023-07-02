@@ -1,39 +1,45 @@
-function getAllResident(connection, callback) {
-  connection.query(
-    "SELECT nhan_khau.*, chung_minh_thu.soCMT FROM nhan_khau join chung_minh_thu on nhan_khau.ID = chung_minh_thu.idNhanKhau",
-    (error, result) => {
+async function getAllResident(connection, callback) {
+  try {
+    const query1 = `
+      SELECT nhan_khau.*, chung_minh_thu.soCMT
+      FROM nhan_khau
+      JOIN chung_minh_thu ON nhan_khau.ID = chung_minh_thu.idNhanKhau
+    `;
+
+    const result = await executeQuery(connection, query1);
+
+    const promises = result.map(async (element) => {
+      const idNhanKhau = element.ID;
+      const query2 = `
+        SELECT tuNgay, denNgay, diaChi, ngheNghiep, noiLamViec
+        FROM tieu_su
+        WHERE idNhanKhau = ?
+      `;
+
+      const result2 = await executeQuery(connection, query2, [idNhanKhau]);
+      element.tieuSu = result2;
+      return element;
+    });
+
+    const updatedResult = await Promise.all(promises);
+    callback(null, updatedResult);
+  } catch (error) {
+    callback(error, null);
+  }
+}
+
+function executeQuery(connection, query, params = []) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, params, (error, result) => {
       if (error) {
-        callback(error, null)
+        reject(error);
       } else {
-        const promises = result.map((element) => {
-          const idNhanKhau = element["ID"]
-          return new Promise((resolve, reject) => {
-            connection.query(
-              "SELECT tuNgay, denNgay, diaChi, ngheNghiep, noiLamViec FROM tieu_su WHERE idNhanKhau = ?",
-              [idNhanKhau],
-              (error2, result2) => {
-                if (error2) {
-                  reject(error2)
-                } else {
-                  element["tieuSu"] = result2
-                  resolve(element)
-                }
-              },
-            )
-          })
-        })
-        Promise.all(promises)
-          .then((updatedResult) => {
-            callback(null, updatedResult)
-          })
-          .catch((error) => {
-            callback(error, null)
-          })
+        resolve(result);
       }
-    },
-  )
+    });
+  });
 }
 
 module.exports = {
-  getAllResident: getAllResident,
-}
+  getAllResident,
+};
