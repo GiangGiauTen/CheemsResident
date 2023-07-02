@@ -10,6 +10,7 @@ const AddMeeting = () => {
   const [residentData, setResidentData] = useState([]);
   const [selectedResident, setSelectedResident] = useState([]);
   const [hostId, setHostId] = useState(null);
+  const [existingCodes, setExistingCodes] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,7 +26,19 @@ const AddMeeting = () => {
         console.error(error);
       }
     };
+    const fetchExistingCodes = async () => {
+      try {
+        const response = await axios.get('http://localhost:4001/api/meeting/');
+        if (response.status === 200) {
+          const codes = response.data.map(e => e.maCuocHop);
+          setExistingCodes(codes);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
     fetchData();
+    fetchExistingCodes();
   }, []);
 
   const columns = [
@@ -53,6 +66,13 @@ const AddMeeting = () => {
     }),
   };
 
+  const checkMeetingCode = (rule, value, callback) => {
+    if (existingCodes.includes(value)) {
+      callback('Mã Cuộc Họp đã tồn tại. Vui Lòng nhập mã khác');
+    } else {
+      callback();
+    }
+  };
   //fetch API cho Minh (Tôi quên lệnh rồi nên tôi ChatGPT bừa đấy :))
   const handleSubmit = async values => {
     try {
@@ -62,6 +82,7 @@ const AddMeeting = () => {
         values['meetingDate']['$d'],
       ).toLocaleDateString('fr-CA');
       console.log(values);
+
       const response = await fetch('http://localhost:4001/api/meeting/', {
         method: 'POST',
         headers: {
@@ -89,7 +110,10 @@ const AddMeeting = () => {
         <Form.Item
           name="maCuocHop"
           label="Mã cuộc họp"
-          rules={[{ required: true, message: 'Vui lòng nhập mã cuộc họp' }]}>
+          rules={[
+            { required: true, message: 'Vui lòng nhập mã cuộc họp' },
+            { validator: checkMeetingCode },
+          ]}>
           <Input placeholder="Nhập mã cuộc họp" />
         </Form.Item>
 
