@@ -57,8 +57,52 @@ function createNewMeeting(body, connection) {
     },
   )
 }
+function deleteMeeting(maCuocHop, connection, callback) {
+  connection.beginTransaction((err) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    connection.query(
+      "DELETE FROM tham_gia_cuoc_hop WHERE idCuocHop = ?",
+      [maCuocHop],
+      (err, result) => {
+        if (err) {
+          connection.rollback(() => {
+            callback(err);
+          });
+          return;
+        }
+
+        connection.query(
+          "DELETE FROM cuoc_hop WHERE maCuocHop = ?",
+          [maCuocHop],
+          (err, result) => {
+            if (err) {
+              connection.rollback(() => {
+                callback(err);
+              });
+            } else {
+              connection.commit((err) => {
+                if (err) {
+                  connection.rollback(() => {
+                    callback(err);
+                  });
+                } else {
+                  callback(null, result.affectedRows > 0);
+                }
+              });
+            }
+          }
+        );
+      }
+    );
+  });
+}
 
 module.exports = {
   getAllMeeting: getAllMeeting,
   createNewMeeting: createNewMeeting,
-}
+  deleteMeeting: deleteMeeting,
+};

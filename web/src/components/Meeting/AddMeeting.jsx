@@ -73,7 +73,6 @@ const AddMeeting = () => {
       callback();
     }
   };
-  //fetch API cho Minh (Tôi quên lệnh rồi nên tôi ChatGPT bừa đấy :))
   const handleSubmit = async values => {
     try {
       values['idNguoiTaoCuocHop'] = hostId;
