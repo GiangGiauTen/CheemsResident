@@ -16,6 +16,19 @@ async function TemporaryResidentRegister(body, connection, res) {
 		},
 	)
 }
+
+async function GetAllTemporaryResident(connection, res) {
+	const query1 = `SELECT * FROM tam_tru`
+	await connection.query(query1, [], (error, result) => {
+		if (error) {
+			console.log(error)
+		} else {
+			res.status(200).json(result)
+		}
+	})
+}
+
 module.exports = {
 	TemporaryResidentRegister: TemporaryResidentRegister,
+	GetAllTemporaryResident: GetAllTemporaryResident,
 }

@@ -1,28 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, DatePicker, Button, Table, Select } from 'antd';
-import axios from 'axios'
-
+import axios from 'axios';
+import moment from 'moment';
 const { TextArea } = Input;
 
 const AddMeeting = () => {
   const [form] = Form.useForm();
   const [members, setMembers] = useState([]);
-  const [residentData, setResidentData] = useState([])
-  const [selectedResident, setSelectedResident] = useState([])
-  const [hostId, setHostId] = useState(null)
+  const [residentData, setResidentData] = useState([]);
+  const [selectedResident, setSelectedResident] = useState([]);
+  const [hostId, setHostId] = useState(null);
+  const [existingCodes, setExistingCodes] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:4001/api/resident/');
         if (response.status === 200) {
-          const resData = response.data.map(e => { e['key'] = e['ID']; return e });
-          setResidentData(resData)
+          const resData = response.data.map(e => {
+            e['key'] = e['ID'];
+            return e;
+          });
+          setResidentData(resData);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchExistingCodes = async () => {
+      try {
+        const response = await axios.get('http://localhost:4001/api/meeting/');
+        if (response.status === 200) {
+          const codes = response.data.map(e => e.maCuocHop);
+          setExistingCodes(codes);
         }
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
+    fetchExistingCodes();
   }, []);
 
   const columns = [
@@ -42,22 +58,30 @@ const AddMeeting = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedResident(selectedRows)
+      setSelectedResident(selectedRows);
     },
-    getCheckboxProps: (record) => ({
+    getCheckboxProps: record => ({
       disabled: record.name === 'Disabled User',
       name: record.name,
     }),
   };
 
-
-  //fetch API cho Minh (Tôi quên lệnh rồi nên tôi ChatGPT bừa đấy :))
-  const handleSubmit = async (values) => {
+  const checkMeetingCode = (rule, value, callback) => {
+    if (existingCodes.includes(value)) {
+      callback('Mã Cuộc Họp đã tồn tại. Vui Lòng nhập mã khác');
+    } else {
+      callback();
+    }
+  };
+  const handleSubmit = async values => {
     try {
-      values['idNguoiTaoCuocHop'] = hostId
-      values['nguoiThamGia'] = selectedResident
-      values['ngayHop'] = (new Date(values['meetingDate']['$d'])).toLocaleDateString('fr-CA')
-      console.log(values)
+      values['idNguoiTaoCuocHop'] = hostId;
+      values['nguoiThamGia'] = selectedResident;
+      values['ngayHop'] = new Date(
+        values['meetingDate']['$d'],
+      ).toLocaleDateString('fr-CA');
+      console.log(values);
+
       const response = await fetch('http://localhost:4001/api/meeting/', {
         method: 'POST',
         headers: {
@@ -85,24 +109,28 @@ const AddMeeting = () => {
         <Form.Item
           name="maCuocHop"
           label="Mã cuộc họp"
-          rules={[{ required: true, message: 'Vui lòng nhập mã cuộc họp' }]}
-        >
+          rules={[
+            { required: true, message: 'Vui lòng nhập mã cuộc họp' },
+            { validator: checkMeetingCode },
+          ]}>
           <Input placeholder="Nhập mã cuộc họp" />
         </Form.Item>
 
         <Form.Item
           name="meetingDate"
           label="Ngày họp"
-          rules={[{ required: true, message: 'Vui lòng chọn thời gian' }]}
-        >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm" />
+          rules={[{ required: true, message: 'Vui lòng chọn thời gian' }]}>
+          <DatePicker
+            showTime
+            format="YYYY-MM-DD"
+            disabledDate={current => current && current < moment().endOf('day')}
+          />
         </Form.Item>
 
         <Form.Item
           name="diaDiem"
           label="Địa điểm"
-          rules={[{ required: true, message: 'Vui lòng nhập địa điểm' }]}
-        >
+          rules={[{ required: true, message: 'Vui lòng nhập địa điểm' }]}>
           <Input placeholder="Nhập địa điểm" />
         </Form.Item>
 
@@ -113,18 +141,20 @@ const AddMeeting = () => {
         <Select
           showSearch
           placeholder="Chọn người chủ trì"
-          onChange={(target) => {
-            setHostId(target)
+          onChange={target => {
+            setHostId(target);
           }}
           optionFilterProp="children"
           filterOption={(input, option) =>
-            (option ? option.label : "").toLowerCase().includes(input.toLowerCase())
+            (option ? option.label : '')
+              .toLowerCase()
+              .includes(input.toLowerCase())
           }
           options={selectedResident.map(e => {
             return {
               value: e['ID'],
-              label: e['hoTen']
-            }
+              label: e['hoTen'],
+            };
           })}
         />
 
@@ -138,7 +168,7 @@ const AddMeeting = () => {
       <h2>Thành viên</h2>
       <Table
         rowSelection={{
-          type: "checkbox",
+          type: 'checkbox',
           ...rowSelection,
         }}
         columns={columns}

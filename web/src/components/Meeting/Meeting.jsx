@@ -5,9 +5,14 @@ import axios from 'axios';
 import moment from 'moment';
 const { Search } = Input;
 const Meeting = () => {
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible2, setIsModalVisible2] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState(users);
+  const [isAddParticipantFormVisible, setIsAddParticipantFormVisible] =
+    useState(false);
+  const [users, setUsers] = useState([]);
   const [data, setData] = useState([]);
 
   const [editMeeting, setEditMeeting] = useState({});
@@ -18,7 +23,85 @@ const Meeting = () => {
       [field]: value,
     }));
   };
+  // Hàm lưu giá trị sửa
+  const saveEditValue = () => {
+    const updatedData = data.map(meeting => {
+      if (meeting.maCuocHop === selectedRowData.maCuocHop) {
+        return selectedRowData;
+      }
+      return meeting;
+    });
+    setData(updatedData);
+    setIsModalVisible(false);
+    setIsModalVisible2(false);
+  };
+  // Hàm xóa cuộc họp
+  const handleDelete = async maCuocHop => {
+    try {
+      // Gọi API xóa cuộc họp với mã cuộc họp (meetingId)
+      const response = await axios.delete(
+        `http://localhost:4001/api/meeting/${maCuocHop}`,
+      );
+      if (response.status === 200) {
+        // Nếu API xóa thành công, cập nhật lại state của data (danh sách cuộc họp)
+        setData(prevData =>
+          prevData.filter(meeting => meeting.maCuocHop !== maCuocHop),
+        );
+        setIsModalVisible(false);
+        setIsModalVisible2(false);
+      } else {
+        console.error('Error deleting meeting', response.data.error);
+        // Xử lý hiển thị thông báo lỗi nếu cần thiết
+      }
+    } catch (error) {
+      console.error('Error deleting meeting', error);
+      // Xử lý hiển thị thông báo lỗi nếu cần thiết
+    }
+  };
 
+  const handleSelectUser = user => {
+    setSelectedRowData(prevMeeting => ({
+      ...prevMeeting,
+      nguoiThamGia: [
+        ...prevMeeting.nguoiThamGia,
+        {
+          hoTen: user.hoTen,
+          birthdate: user.birthdate,
+          gioiTinh: user.gioiTinh,
+        },
+      ],
+    }));
+  };
+  // Hàm thêm người tham gia
+  const addParticipant = () => {
+    setIsAddParticipantFormVisible(!isAddParticipantFormVisible);
+  };
+
+  // Hàm xóa người tham gia
+  const removeParticipant = index => {
+    const updatedParticipants = [...selectedRowData.nguoiThamGia];
+    updatedParticipants.splice(index, 1);
+    setSelectedRowData(prevMeeting => ({
+      ...prevMeeting,
+      nguoiThamGia: updatedParticipants,
+    }));
+  };
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:4001/api/resident/');
+        if (response.status === 200) {
+          const userData = response.data;
+          setUsers(userData);
+          setSelectedUsers(userData); // Cập nhật selectedUsers sau khi có dữ liệu người dùng
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,465 +120,33 @@ const Meeting = () => {
   const handleSearch = value => {
     setSearchText(value);
   };
-
+  const handleSearchUsers = value => {
+    const filteredUsers = users.filter(user =>
+      user.hoTen.toLowerCase().includes(value.toLowerCase()),
+    );
+    setSelectedUsers(filteredUsers);
+  };
   const handleRowClick = record => {
     setSelectedRowData(record);
+    setIsModalVisible2(true);
+  };
+  const handleEdit = record => {
+    setSelectedRowData(record);
+    setIsModalVisible2(false);
     setIsModalVisible(true);
   };
 
   const handleModalClose = () => {
     setIsModalVisible(false);
+    setIsModalVisible2(false);
   };
-  // const data = [
-  //   {
-  //     key: '1',
-  //     maCuocHop: 'ABC123',
-  //     hoTen: 'Thua Cay',
-  //     noiDung: 'Trông rất quen mà anh không nhớ đến đây bao giờ',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Điểm đến cuối cùng',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Trước khi em tồn tại',
-  //         namSinh: '01/02/2002',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Sober Song',
-  //         namSinh: '01/02/2002',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Xin lỗi',
-  //         namSinh: '01/02/2002',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '2',
-  //     maCuocHop: 'ABC2',
-  //     hoTen: 'Người thứ 2',
-  //     noiDung: 'Nội dung cuộc họp thứ 2',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 2',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '3',
-  //     maCuocHop: 'ABC3',
-  //     hoTen: 'Người thứ 3',
-  //     noiDung: 'Nội dung cuộc họp thứ 3',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 3',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '4',
-  //     maCuocHop: 'ABC4',
-  //     hoTen: 'Người thứ 4',
-  //     noiDung: 'Nội dung cuộc họp thứ 4',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 4',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '5',
-  //     maCuocHop: 'ABC5',
-  //     hoTen: 'Người thứ 5',
-  //     noiDung: 'Nội dung cuộc họp thứ 5',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 5',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '5',
-  //         hoTen: 'Người tham dự 5',
-  //         namSinh: '01/01/1998',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '6',
-  //     maCuocHop: 'ABC6',
-  //     hoTen: 'Người thứ 6',
-  //     noiDung: 'Nội dung cuộc họp thứ 6',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 6',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '5',
-  //         hoTen: 'Người tham dự 5',
-  //         namSinh: '01/01/1998',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '6',
-  //         hoTen: 'Người tham dự 6',
-  //         namSinh: '01/01/1988',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '7',
-  //     maCuocHop: 'ABC7',
-  //     hoTen: 'Người thứ 7',
-  //     noiDung: 'Nội dung cuộc họp thứ 7',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 7',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '5',
-  //         hoTen: 'Người tham dự 5',
-  //         namSinh: '01/01/1998',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '6',
-  //         hoTen: 'Người tham dự 6',
-  //         namSinh: '01/01/1988',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '7',
-  //         hoTen: 'Người tham dự 7',
-  //         namSinh: '01/01/1993',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '8',
-  //     maCuocHop: 'ABC8',
-  //     hoTen: 'Người thứ 8',
-  //     noiDung: 'Nội dung cuộc họp thứ 8',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 8',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '5',
-  //         hoTen: 'Người tham dự 5',
-  //         namSinh: '01/01/1998',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '6',
-  //         hoTen: 'Người tham dự 6',
-  //         namSinh: '01/01/1988',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '7',
-  //         hoTen: 'Người tham dự 7',
-  //         namSinh: '01/01/1993',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '8',
-  //         hoTen: 'Người tham dự 8',
-  //         namSinh: '01/01/1991',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '9',
-  //     maCuocHop: 'ABC9',
-  //     hoTen: 'Người thứ 9',
-  //     noiDung: 'Nội dung cuộc họp thứ 9',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 9',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '5',
-  //         hoTen: 'Người tham dự 5',
-  //         namSinh: '01/01/1998',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '6',
-  //         hoTen: 'Người tham dự 6',
-  //         namSinh: '01/01/1988',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '7',
-  //         hoTen: 'Người tham dự 7',
-  //         namSinh: '01/01/1993',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '8',
-  //         hoTen: 'Người tham dự 8',
-  //         namSinh: '01/01/1991',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '9',
-  //         hoTen: 'Người tham dự 9',
-  //         namSinh: '01/01/1996',
-  //         gioiTinh: 'Nam',
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     key: '10',
-  //     maCuocHop: 'ABC10',
-  //     hoTen: 'Người thứ 10',
-  //     noiDung: 'Nội dung cuộc họp thứ 10',
-  //     ngayTaoCuocHop: '2022-06-10',
-  //     diaDiem: 'Địa điểm cuộc họp thứ 10',
-  //     nguoiThamGia: [
-  //       {
-  //         id: '1',
-  //         hoTen: 'Người tham dự 1',
-  //         namSinh: '01/01/1990',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '2',
-  //         hoTen: 'Người tham dự 2',
-  //         namSinh: '01/01/1995',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '3',
-  //         hoTen: 'Người tham dự 3',
-  //         namSinh: '01/01/1985',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '4',
-  //         hoTen: 'Người tham dự 4',
-  //         namSinh: '01/01/1992',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '5',
-  //         hoTen: 'Người tham dự 5',
-  //         namSinh: '01/01/1998',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '6',
-  //         hoTen: 'Người tham dự 6',
-  //         namSinh: '01/01/1988',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //       {
-  //         id: '7',
-  //         hoTen: 'Người tham dự 7',
-  //         namSinh: '01/01/1993',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '8',
-  //         hoTen: 'Người tham dự 8',
-  //         namSinh: '01/01/1991',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '9',
-  //         hoTen: 'Người tham dự 9',
-  //         namSinh: '01/01/1996',
-  //         gioiTinh: 'Nam',
-  //       },
-  //       {
-  //         id: '10',
-  //         hoTen: 'Người tham dự 10',
-  //         namSinh: '01/01/1989',
-  //         gioiTinh: 'Nữ',
-  //       },
-  //     ],
-  //   },
-  // ];
+
   const columns = [
     {
       title: 'Mã cuộc họp',
       dataIndex: 'maCuocHop',
-      sorter: (a, b) => a.meetingCode.localeCompare(b.meetingCode),
-      sortDirections: ['ascend', 'descend'],
+      // sorter: (a, b) => a.meetingCode.localeCompare(b.meetingCode),
+      // sortDirections: ['ascend', 'descend'],
     },
     {
       title: 'Người tạo',
@@ -512,19 +163,32 @@ const Meeting = () => {
       sortDirections: ['ascend', 'descend'],
       render: date => new Date(date).toLocaleDateString('vi-VN'),
     },
+    {
+      title: 'Thao tác',
+      key: 'action',
+      render: (_, record, index) => (
+        <Button type="link" onClick={() => handleEdit(record)}>
+          Thao Tác
+        </Button>
+      ),
+    },
   ];
 
   const filteredData = searchText
-    ? data.filter(record =>
-        columns.some(column =>
-          record[column.dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+    ? data.filter(
+        record =>
+          columns &&
+          Array.isArray(columns) &&
+          columns.some(
+            column =>
+              record[column.dataIndex] &&
+              record[column.dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes(searchText.toLowerCase()),
+          ),
       )
     : data;
-
   return (
     <div>
       <Search
@@ -545,27 +209,74 @@ const Meeting = () => {
       />
       <Modal
         title="Thông tin cuộc họp"
+        visible={isModalVisible2}
+        onCancel={handleModalClose}
+        footer={null}>
+        {selectedRowData && (
+          <div>
+            <p>
+              <strong>Mã cuộc họp:</strong> {selectedRowData.maCuocHop}
+            </p>
+            <p>
+              <strong>Người Tạo:</strong> {selectedRowData.hoTen}
+            </p>
+            <p>
+              <strong>Nội Dung:</strong> {selectedRowData.noiDung}
+            </p>
+            <p>
+              <strong>Ngày diễn ra:</strong>{' '}
+              {moment(selectedRowData.ngayTaoCuocHop).format('YYYY-MM-DD ')}
+            </p>
+            <p>
+              <strong>Địa điểm:</strong> {selectedRowData.diaDiem}
+            </p>
+            <p>
+              <strong>Người tham gia:</strong>
+            </p>
+            <Table
+              size="small"
+              bordered
+              dataSource={selectedRowData['nguoiThamGia']}
+              pagination={false}
+              columns={[
+                {
+                  title: 'Tên',
+                  dataIndex: 'hoTen',
+                  key: 'hoTen',
+                  render: (_, record) => <p>{record.hoTen}</p>,
+                },
+                {
+                  title: 'Ngày sinh',
+                  dataIndex: 'birthdate',
+                  key: 'ngaySinh',
+                  render: (_, record) => (
+                    <p>{moment(record.namSinh).format('YYYY-MM-DD')}</p>
+                  ),
+                },
+                {
+                  title: 'Giới tính',
+                  dataIndex: 'gioiTinh',
+                  key: 'gioiTinh',
+                  render: (_, record) => <p>{record.gioiTinh}</p>,
+                },
+              ]}
+            />
+          </div>
+        )}
+      </Modal>
+      <Modal
+        title="Thông tin cuộc họp"
         visible={isModalVisible}
         onCancel={handleModalClose}
         footer={null}>
         {selectedRowData && (
           <div>
-            <Form>
-              <Form.Item label="Mã cuộc họp">
-                <Input
-                  value={selectedRowData.maCuocHop}
-                  onChange={e => updateEditValue('maCuocHop', e.target.value)}
-                />
-              </Form.Item>
-            </Form>
-            <Form>
-              <Form.Item label="Người Tạo">
-                <Input
-                  value={selectedRowData.hoTen}
-                  onChange={e => updateEditValue('hoTen', e.target.value)}
-                />
-              </Form.Item>
-            </Form>
+            <p>
+              <strong>Mã cuộc họp:</strong> {selectedRowData.maCuocHop}
+            </p>
+            <p>
+              <strong>Người Tạo:</strong> {selectedRowData.hoTen}
+            </p>
             <Form>
               <Form.Item label="Nội Dung">
                 <Input
@@ -576,8 +287,10 @@ const Meeting = () => {
             </Form>
             <Form.Item label="Ngày diễn ra">
               <DatePicker
-                value={moment(editMeeting.createdAt)}
-                onChange={date => updateEditValue('createdAt', date.format())}
+                value={moment(selectedRowData.ngayTaoCuocHop)}
+                onChange={date =>
+                  updateEditValue('ngayTaoCuocHop', date.format())
+                }
               />
             </Form.Item>
             <Form>
@@ -588,36 +301,35 @@ const Meeting = () => {
                 />
               </Form.Item>
             </Form>
-            <Form.Item label="Người tham gia">
+            <Form.Item>
+              <p>
+                <strong>Người tham gia:</strong>
+              </p>
               <Table
                 size="small"
                 bordered
                 dataSource={selectedRowData['nguoiThamGia']}
-                pagination={false}
+                pagination={true}
                 columns={[
                   {
                     title: 'Tên',
                     dataIndex: 'hoTen',
                     key: 'hoTen',
-                    render: (_, record, index) => (
-                      <Input value={record.hoTen} onChange={e => {}} />
-                    ),
+                    render: (_, record) => <p>{record.hoTen}</p>,
                   },
                   {
                     title: 'Ngày sinh',
                     dataIndex: 'birthdate',
                     key: 'birthdate',
-                    render: (_, record, index) => (
-                      <Input value={record.namSinh} onChange={e => {}} />
+                    render: (_, record) => (
+                      <p>{moment(record.namSinh).format('YYYY-MM-DD')}</p>
                     ),
                   },
                   {
                     title: 'Giới tính',
                     dataIndex: 'gioiTinh',
                     key: 'gioiTinh',
-                    render: (_, record, index) => (
-                      <Input value={record.gioiTinh} onChange={e => {}} />
-                    ),
+                    render: (_, record) => <p>{record.gioiTinh}</p>,
                   },
                   {
                     title: 'Hành động',
@@ -626,8 +338,7 @@ const Meeting = () => {
                     render: (_, record, index) => (
                       <Button
                         type="link"
-                        // onClick=({})
-                      >
+                        onClick={() => removeParticipant(index)}>
                         Xóa
                       </Button>
                     ),
@@ -636,22 +347,73 @@ const Meeting = () => {
               />
               <Button
                 type="dashed"
-                // onClick={}
+                onClick={addParticipant}
                 style={{ marginTop: '10px' }}>
                 Thêm người tham gia
               </Button>
             </Form.Item>
+            {isAddParticipantFormVisible && (
+              <Form.Item>
+                <p>
+                  <strong>Thêm người người tham gia:</strong>
+                </p>
+                <Search
+                  placeholder="Tìm kiếm người dùng"
+                  onSearch={handleSearchUsers}
+                  style={{ marginBottom: 10 }}
+                />
+                <Table
+                  size="small"
+                  bordered
+                  dataSource={selectedUsers}
+                  pagination={{ pageSize: 5 }}
+                  columns={[
+                    {
+                      title: 'Tên',
+                      dataIndex: 'hoTen',
+                      key: 'hoTen',
+                      render: (_, record) => <p>{record.hoTen}</p>,
+                    },
+                    {
+                      title: 'Ngày sinh',
+                      dataIndex: 'namSinh',
+                      key: 'namSinh',
+                      render: (_, record) => (
+                        <p>{moment(record.namSinh).format('YYYY-MM-DD')}</p>
+                      ),
+                    },
+                    {
+                      title: 'Giới tính',
+                      dataIndex: 'gioiTinh',
+                      key: 'gioiTinh',
+                      render: (_, record) => <p>{record.gioiTinh}</p>,
+                    },
+                    {
+                      title: 'Hành động',
+                      dataIndex: 'action',
+                      key: 'action',
+                      render: (_, record) => (
+                        <Button
+                          type="link"
+                          onClick={() => handleSelectUser(record)}>
+                          Chọn
+                        </Button>
+                      ),
+                    },
+                  ]}
+                />
+                {/* ... */}
+              </Form.Item>
+            )}
           </div>
         )}
 
         <div>
-          <Button
-            // onClick={}
-            style={{ marginTop: '10px' }}>
-            Sửa Nhóm
+          <Button onClick={saveEditValue} style={{ marginTop: '10px' }}>
+            OK
           </Button>
           <Button
-            // onClick={}
+            onClick={() => handleDelete(selectedRowData.maCuocHop)}
             style={{ marginTop: '10px' }}>
             Xóa Nhóm
           </Button>
@@ -662,246 +424,3 @@ const Meeting = () => {
 };
 
 export default Meeting;
-
-// Code này chứa cả search theo từng cột mà tui cop được ở chat gpt, nhưng chưa hiểu vsao search chung k hoạt động nên cứ đẻ đây:v
-// import React, { useState } from 'react';
-// import { Table, Input, Modal } from 'antd';
-// import { SearchOutlined } from '@ant-design/icons';
-// const { Search } = Input;
-// const data = [
-//   {
-//     key: '1',
-//     meetingCode: 'ABC123',
-//     creator: 'Thua Cay',
-//     content: 'Trông rất quen mà anh không nhớ đến đây bao giờ',
-//     createdAt: '2022-06-10',
-//     place: 'Điểm đến cuối cùng',
-//     nguoiThamGia: [
-//       {
-//         id:'1',
-//         hoTen: 'Trước khi em tồn tại',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//       {
-//         id:'2',
-//         hoTen: 'Sober Song',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//       {
-//         id:'3',
-//         hoTen: 'Xin lỗi',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//     ]
-//   },
-//   {
-//     key: '2',
-//     meetingCode: 'DEF456',
-//     creator: 'Katarina du couteau',
-//     content: 'Ám sát vua J3',
-//     createdAt: '2022-06-12',
-//     place: 'Trà đá hồ gươm',
-//     nguoiThamGia: [
-//       {
-//         id:'1',
-//         hoTen: 'Trước khi em tồn tại',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//       {
-//         id:'2',
-//         hoTen: 'Sober Song',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//       {
-//         id:'3',
-//         hoTen: 'Xin lỗi',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//     ],
-//   },
-//   {
-//     key: '3',
-//     meetingCode: 'GHI789',
-//     creator: 'Ayame Nakiri',
-//     content: 'Docchi Docchi Yodayo Ojou-sama',
-//     createdAt: '2022-06-08',
-//     place: 'Hóa ra em ở đây',
-//     nguoiThamGia: [
-//       {
-//         id:'1',
-//         hoTen: 'Trước khi em tồn tại',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//       {
-//         id:'2',
-//         hoTen: 'Sober Song',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//       {
-//         id:'3',
-//         hoTen: 'Xin lỗi',
-//         namSinh:'01/02/2002',
-//         gioiTinh:'Nam',
-//       },
-//     ],
-//   },
-// ];
-// const Meeting = () => {
-
-//   const [searchText, setSearchText] = useState('');
-//   const [searchedColumn, setSearchedColumn] = useState('');
-//   const [selectedRowData, setSelectedRowData] = useState(null);
-//   const [isModalVisible, setIsModalVisible] = useState(false);
-
-//   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-//     confirm();
-//     setSearchText(selectedKeys[0]);
-//     setSearchedColumn(dataIndex);
-//   };
-
-//   const handleReset = (clearFilters) => {
-//     clearFilters();
-//     setSearchText('');
-//   };
-
-//   const getColumnSearchProps = (dataIndex) => ({
-//     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-//       <div style={{ padding: 8 }}>
-//         <Search
-//           placeholder={`Tìm kiếm ${dataIndex}`}
-//           value={selectedKeys[0]}
-//           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-//           onSearch={() => handleSearch(selectedKeys, confirm, dataIndex)}
-//           style={{ width: 188, marginBottom: 8, display: 'block' }}
-//         />
-//         <button type="button" onClick={() => handleReset(clearFilters)} style={{ width: 90, marginRight: 8 }}>
-//           Reset
-//         </button>
-//         <button type="button" onClick={() => confirm()} style={{ width: 90 }}>
-//           Filter
-//         </button>
-//       </div>
-//     ),
-//     filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-//     onFilter: (value, record) => {
-//       const columnData = record[dataIndex].toString().toLowerCase();
-//       return columnData.includes(value.toLowerCase());
-//     },
-//   });
-
-//   const columns = [
-//     {
-//       title: 'Mã cuộc họp',
-//       dataIndex: 'meetingCode',
-//       sorter: (a, b) => a.meetingCode.localeCompare(b.meetingCode),
-//       sortDirections: ['ascend', 'descend'],
-//       // ...getColumnSearchProps('meetingCode'),
-//     },
-//     {
-//       title: 'Người tạo',
-//       dataIndex: 'creator',
-//     },
-//     {
-//       title: 'Nội dung chính',
-//       dataIndex: 'content',
-//     },
-//     {
-//       title: 'Ngày tạo',
-//       dataIndex: 'createdAt',
-//       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-//       sortDirections: ['ascend', 'descend'],
-//     },
-//   ];
-
-//   const onChange = (pagination, filters, sorter, extra) => {
-//     console.log('params', pagination, filters, sorter, extra);
-//   };
-
-//   const filteredData = searchText
-//     ? data.filter((record) =>
-//         Object.keys(record).some((key) =>
-//           record[key].toString().toLowerCase().includes(searchText.toLowerCase())
-//         )
-//       )
-//     : data;
-//     const handleRowClick = (record) => {
-//           setSelectedRowData(record);
-//           setIsModalVisible(true);
-//         };
-
-//         const handleModalClose = () => {
-//           setIsModalVisible(false);
-//         };
-
-//   return (
-//     <div>
-//       <Search
-//         placeholder="Tìm kiếm"
-//         value={searchText}
-//         onChange={(e) => setSearchText(e.target.value)}
-//         style={{ width: 200, marginBottom: 16 }}
-//       />
-//       <Table columns={columns} dataSource={data} onRow={(record) => ({ onClick: () => handleRowClick(record) })} />
-//       <Modal
-//         title="Thông tin cuộc họp"
-//         visible={isModalVisible}
-//         onCancel={handleModalClose}
-//         footer={null}
-//       >
-//         {selectedRowData && (
-//           <div>
-//             <p>
-//               <strong>Mã cuộc họp:</strong> {selectedRowData.meetingCode}
-//             </p>
-//             <p>
-//               <strong>Người tạo:</strong> {selectedRowData.creator}
-//             </p>
-//             <p>
-//               <strong>Nội dung:</strong> {selectedRowData.content}
-//             </p>
-//             <p>
-//               <strong>Ngày tạo:</strong> {selectedRowData.createdAt}
-//             </p>
-//             <p>
-//               <strong>Địa điểm:</strong> {selectedRowData.place}
-//             </p>
-//             <p>
-//               <strong>Người tham gia:</strong>
-//             </p>
-//             <Table
-//               columns={[
-//                 {
-//                   title: 'Tên',
-//                   dataIndex: 'hoTen',
-//                   key: 'hoTen',
-//                 },
-//                 {
-//                   title: 'Ngày sinh',
-//                   dataIndex: 'namSinh',
-//                   key: 'namSinh',
-//                 },
-//                 {
-//                   title: 'Giới tính',
-//                   dataIndex: 'gioiTinh',
-//                   key: 'gioiTinh',
-//                 },
-//               ]}
-//               dataSource={selectedRowData.nguoiThamGia}
-//               pagination={false}
-//             />
-//           </div>
-//         )}
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default Meeting;

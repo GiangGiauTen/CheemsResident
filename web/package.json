@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-highlight-words": "^0.20.0",
     "react-scripts": "^1.1.5",
+    "recharts": "^2.7.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
