@@ -1,10 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Table, Modal, Checkbox } from 'antd';
-import { FilterOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import TiLeNamNu from './TiLeNamNu'
+import DoTuoi from './DoTuoi'
+import TamVang from './TamVang'
+import { Card } from 'antd'
+import TamTru from './TamTru'
 
-const { Search } = Input;
+const tabListNoTitle = [
+	{
+		key: '1',
+		label: 'Tỉ lệ nam nữ',
+	},
+	{
+		key: '2',
+		label: 'Thống kê theo tuổi',
+	},
+	{
+		key: '3',
+		label: 'Danh sách tạm vắng',
+	},
+	{
+		key: '4',
+		label: 'Danh sách tạm trú',
+	},
+]
 
+const contentListNoTitle = {
+	1: <TiLeNamNu />,
+	2: <DoTuoi />,
+	3: <TamVang />,
+	4: <TamTru />,
+}
+const Statistic = () => {
+	const [activeTabKey, setActiveTabKey] = useState('1')
+	const onTabChange = (key) => {
+		setActiveTabKey(key)
+	}
+
+	return (
+		<div>
+			<Card
+				style={{
+					width: '100%',
+				}}
+				tabList={tabListNoTitle}
+				activeTabKey={activeTabKey}
+				onTabChange={onTabChange}>
+				{contentListNoTitle[activeTabKey]}
+			</Card>
+		</div>
+	)
+}
+
+/*
 function Statistic() {
   const [form] = Form.useForm();
   const [populationData, setPopulationData] = useState([]);
@@ -57,16 +104,6 @@ function Statistic() {
 
   const handleModalCancel = () => {
     setModalVisible(false);
-  };
-
-  const handleCriteriaSelection = (criteriaField, checked) => {
-    if (checked) {
-      setSelectedCriteria(prevState => [...prevState, criteriaField]);
-    } else {
-      setSelectedCriteria(prevState =>
-        prevState.filter(field => field !== criteriaField)
-      );
-    }
   };
 
   const handleMaxAgeChange = e => {
@@ -186,5 +223,5 @@ function Statistic() {
     </div>
   );
 }
-
-export default Statistic;
+*/
+export default Statistic
