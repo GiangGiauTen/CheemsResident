@@ -1,10 +1,10 @@
-import React from 'react'
-import { Button, Form, Input, InputNumber, Select, DatePicker } from 'antd'
-import { useState } from 'react'
-import danTocVietNam from './Options'
-import moment from 'moment'
-import API_URL from '../../../utils/config'
-const { Option } = Select
+import React from 'react';
+import { Button, Form, Input, InputNumber, Select, DatePicker } from 'antd';
+import { useState } from 'react';
+import danTocVietNam from './Options';
+import moment from 'moment';
+import API_URL from '../../../utils/config';
+const { Option } = Select;
 
 const formItemLayout = {
 	labelCol: {
@@ -23,7 +23,7 @@ const formItemLayout = {
 			span: 16,
 		},
 	},
-}
+};
 const tailFormItemLayout = {
 	wrapperCol: {
 		xs: {
@@ -35,20 +35,20 @@ const tailFormItemLayout = {
 			offset: 8,
 		},
 	},
-}
+};
 const FormatDate = (inputDate) => {
-	const date = new Date(inputDate)
-	const year = date.getFullYear()
-	const month = String(date.getMonth() + 1).padStart(2, '0')
-	const day = String(date.getDate()).padStart(2, '0')
-	return `${year}-${month}-${day}`
-}
+	const date = new Date(inputDate);
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+};
 const Add = () => {
-	const [form] = Form.useForm()
+	const [form] = Form.useForm();
 	const onFinish = (values) => {
 		// Gửi dữ liệu đi hoặc xử lý dữ liệu ở đây
-		values['namSinh'] = FormatDate(values['namSinh']['$d'])
-		console.log('Received values of form: ', values)
+		values['namSinh'] = FormatDate(values['namSinh']['$d']);
+		console.log('Received values of form: ', values);
 		// Ví dụ: gửi dữ liệu đi qua API
 		fetch(`${API_URL}/resident/add`, {
 			method: 'POST',
@@ -59,13 +59,14 @@ const Add = () => {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(data)
+				console.log(data);
 			})
 			.catch((error) => {
 				// Xử lý lỗi nếu có
-				console.error('Error:', error)
-			})
-	}
+				console.error('Error:', error);
+			});
+		console.log(values);
+	};
 	const prefixSelector = (
 		<Form.Item name='prefix' noStyle>
 			<Select
@@ -76,7 +77,7 @@ const Add = () => {
 				<Option value='87'>+87</Option>
 			</Select>
 		</Form.Item>
-	)
+	);
 	const suffixSelector = (
 		<Form.Item name='suffix' noStyle>
 			<Select
@@ -87,19 +88,19 @@ const Add = () => {
 				<Option value='CNY'>¥</Option>
 			</Select>
 		</Form.Item>
-	)
-	const [autoCompleteResult, setAutoCompleteResult] = useState([])
+	);
+	const [autoCompleteResult, setAutoCompleteResult] = useState([]);
 	const onWebsiteChange = (value) => {
 		if (!value) {
-			setAutoCompleteResult([])
+			setAutoCompleteResult([]);
 		} else {
-			setAutoCompleteResult(['.com', '.org', '.net'].map((domain) => `${value}${domain}`))
+			setAutoCompleteResult(['.com', '.org', '.net'].map((domain) => `${value}${domain}`));
 		}
-	}
+	};
 	const websiteOptions = autoCompleteResult.map((website) => ({
 		label: website,
 		value: website,
-	}))
+	}));
 	return (
 		<Form
 			{...formItemLayout}
@@ -132,7 +133,7 @@ const Add = () => {
 				rules={[{ type: 'object', required: true, message: 'Hãy nhập ngày tháng năm sinh' }]}>
 				<DatePicker
 					disabledDate={(current) => {
-						return current.isBefore(moment().subtract(100, 'year')) || current.isAfter(moment())
+						return current.isBefore(moment().subtract(100, 'year')) || current.isAfter(moment());
 					}}
 				/>
 			</Form.Item>
@@ -318,6 +319,6 @@ const Add = () => {
 				</Button>
 			</Form.Item>
 		</Form>
-	)
-}
-export default Add
+	);
+};
+export default Add;

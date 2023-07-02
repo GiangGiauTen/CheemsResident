@@ -1,6 +1,6 @@
 
 function createNewHouseHold(body, connection) {
-    const { maHoKhau, idChuHo, diaChi, ngayLap, thanhVien } = body;
+    const { maHoKhau, diaChi, ngayLap, chuHo, thanhVien } = body;
 
     connection.query(
         "INSERT INTO ho_khau (maHoKhau, idChuHo, diaChi, ngayLap) VALUES (?, ?, ?, ?)",

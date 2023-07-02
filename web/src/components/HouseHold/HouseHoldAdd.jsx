@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Modal, Select, AutoComplete, DatePicker } from 'antd';
 import axios from 'axios';
+import API_URL from '../../utils/config';
 
 const { Option } = Select;
 
 const HouseHoldAdd = () => {
     // State hooks
     const [form] = Form.useForm();
-    const [isModalVisible, setIsModalVisible] = useState(true);
     const [selectedChuHo, setSelectedChuHo] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [memberFormItems, setMemberFormItems] = useState([]);
@@ -37,59 +37,44 @@ const HouseHoldAdd = () => {
         setSearchText(value);
     };
 
-    const handleModalCancel = () => {
-        setIsModalVisible(false);
-    };
-
     const handleSelectChuHo = (record) => {
         setSelectedChuHo(record);
     };
 
+    const FormatDate = (inputDate) => {
+        const date = new Date(inputDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    // Fix so it doesn't return undefined please :(
     const handleSubmit = (values) => {
-        const { chuHo, household } = values;
-        const members = household.members.map((member) => ({
-            maHoKhau: household.maHoKhau,
-            idNhanKhau: residents.find((resident) => resident.hoTen === member.hoten).idNhanKhau,
-            quanHeVoiChuHo: member.quanhe,
-        }));
-
-        const newHousehold = {
-            maHoKhau: household.maHoKhau,
-            idChuHo: residents.find((resident) => resident.hoTen === chuHo).idNhanKhau,
-            diaChi: household.diaChi,
-            ngayLap: household.ngayLap ? household.ngayLap.format('YYYY-MM-DD') : null,
-            thanhVien: members,
-        };
-
-        const requestData = newHousehold;
-
-        axios
-            .post('http://localhost:4001/api/household/', requestData)
-            .then((response) => {
-                console.log('Form values:', values);
-                console.log('Response:', response.data);
-                // Handle success or display a success message
-                const { householdId } = response.data;
-                const memberData = members.map((member) => [
-                    member.idNhanKhau,
-                    householdId,
-                    member.quanHeVoiChuHo,
-                ]);
-
-                // Further processing or handling of the response
+        values['ngayLap'] = FormatDate(values['ngayLap']['$d']);
+        // Gửi dữ liệu đi hoặc xử lý dữ liệu ở đây
+        console.log('Received values of form: ', values);
+        // Ví dụ: gửi dữ liệu đi qua API
+        fetch(`${API_URL}/household/add`, {
+            method: 'POST',
+            body: JSON.stringify(values),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
             })
             .catch((error) => {
+                // Xử lý lỗi nếu có
                 console.error('Error:', error);
-                // Handle error or display an error message
             });
+        // Fix
+        console.log(values);
+
     };
 
 
-    const handleConfirmSelection = () => {
-        if (selectedChuHo) {
-            setIsModalVisible(false);
-        }
-    };
 
     const handleRemoveMemberFormItem = (index) => {
         setMemberFormItems((prevItems) => prevItems.filter((_, i) => i !== index));
@@ -163,8 +148,12 @@ const HouseHoldAdd = () => {
                 <Form.Item name="diaChi" label="Địa chỉ" rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}>
                     <Input placeholder="Nhập địa chỉ" />
                 </Form.Item>
-                <Form.Item name="ngayLap" label="Ngày lập" rules={[{ required: true, message: 'Vui lòng chọn ngày lập' }]}>
-                    <DatePicker />
+                <Form.Item
+                    name='ngayLap'
+                    label='Ngày tháng năm sinh'
+                    rules={[{ type: 'object', required: true, message: 'Hãy nhập ngày tháng năm sinh' }]}>
+                    <DatePicker
+                    />
                 </Form.Item>
                 <Form.Item name="chuHo" label="Chủ hộ" rules={[{ required: true, message: 'Vui lòng chọn chủ hộ' }]}>
                     <Select
