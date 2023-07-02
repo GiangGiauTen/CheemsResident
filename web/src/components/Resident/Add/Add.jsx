@@ -24,6 +24,18 @@ const formItemLayout = {
 		},
 	},
 }
+const tailFormItemLayout = {
+	wrapperCol: {
+		xs: {
+			span: 24,
+			offset: 0,
+		},
+		sm: {
+			span: 16,
+			offset: 8,
+		},
+	},
+}
 const FormatDate = (inputDate) => {
 	const date = new Date(inputDate)
 	const year = date.getFullYear()
@@ -300,7 +312,7 @@ const Add = () => {
 				]}>
 				<Input />
 			</Form.Item>
-			<Form.Item>
+			<Form.Item {...tailFormItemLayout}>
 				<Button type='primary' htmlType='submit'>
 					Thêm
 				</Button>
