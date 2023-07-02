@@ -36,25 +36,29 @@ const Meeting = () => {
     setIsModalVisible2(false);
   };
   // Hàm xóa cuộc họp
-  const handleDelete = async (maCuocHop) => {
+  const handleDelete = async maCuocHop => {
     try {
       // Gọi API xóa cuộc họp với mã cuộc họp (meetingId)
-      const response = await axios.delete(`http://localhost:4001/api/meeting/${maCuocHop}`);
+      const response = await axios.delete(
+        `http://localhost:4001/api/meeting/${maCuocHop}`,
+      );
       if (response.status === 200) {
         // Nếu API xóa thành công, cập nhật lại state của data (danh sách cuộc họp)
-        setData((prevData) => prevData.filter((meeting) => meeting.maCuocHop !== maCuocHop));
+        setData(prevData =>
+          prevData.filter(meeting => meeting.maCuocHop !== maCuocHop),
+        );
         setIsModalVisible(false);
         setIsModalVisible2(false);
       } else {
-        console.error("Error deleting meeting", response.data.error);
+        console.error('Error deleting meeting', response.data.error);
         // Xử lý hiển thị thông báo lỗi nếu cần thiết
       }
     } catch (error) {
-      console.error("Error deleting meeting", error);
+      console.error('Error deleting meeting', error);
       // Xử lý hiển thị thông báo lỗi nếu cần thiết
     }
   };
-  
+
   const handleSelectUser = user => {
     setSelectedRowData(prevMeeting => ({
       ...prevMeeting,
@@ -116,7 +120,12 @@ const Meeting = () => {
   const handleSearch = value => {
     setSearchText(value);
   };
-
+  const handleSearchUsers = value => {
+    const filteredUsers = users.filter(user =>
+      user.hoTen.toLowerCase().includes(value.toLowerCase()),
+    );
+    setSelectedUsers(filteredUsers);
+  };
   const handleRowClick = record => {
     setSelectedRowData(record);
     setIsModalVisible2(true);
