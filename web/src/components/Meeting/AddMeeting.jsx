@@ -49,6 +49,9 @@ const AddMeeting = () => {
     {
       title: 'Ngày sinh',
       dataIndex: 'namSinh',
+      render: (_, record) => (
+        <p>{moment(record.namSinh).format('YYYY-MM-DD')}</p>
+      ),
     },
     {
       title: 'Giới tính',
@@ -122,7 +125,7 @@ const AddMeeting = () => {
           rules={[{ required: true, message: 'Vui lòng chọn thời gian' }]}>
           <DatePicker
             showTime
-            format="YYYY-MM-DD"
+            format="YYYY-MM-DD HH:mm"
             disabledDate={current => current && current < moment().endOf('day')}
           />
         </Form.Item>
