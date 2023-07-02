@@ -122,7 +122,7 @@ const AddMeeting = () => {
           rules={[{ required: true, message: 'Vui lòng chọn thời gian' }]}>
           <DatePicker
             showTime
-            format="YYYY-MM-DD HH:mm"
+            format="YYYY-MM-DD"
             disabledDate={current => current && current < moment().endOf('day')}
           />
         </Form.Item>
