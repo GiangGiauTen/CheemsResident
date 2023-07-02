@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Button, Form, Input, Select, DatePicker } from 'antd'
+import { Button, Form, Input, Select, DatePicker, message } from 'antd'
 import { useState } from 'react'
 import axios from 'axios'
 import API_URL from '../../../utils/config'
@@ -53,11 +53,11 @@ function TamVang() {
 	useEffect(() => {
 		form.validateFields(['CMT'])
 	}, [inputStatus])
+
 	const onFinish = (values) => {
 		values['idNhanKhau'] = residentId
 		values['tuNgay'] = FormatDate(values['range-picker'][0]['$d'])
 		values['denNgay'] = FormatDate(values['range-picker'][1]['$d'])
-		console.log('Received values of form: ', values)
 		fetch(`${API_URL}/resident/absentRegister`, {
 			method: 'POST',
 			body: JSON.stringify(values),
@@ -67,12 +67,16 @@ function TamVang() {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				// Xử lý kết quả nếu cần
-				console.log(data)
+				if (data.message) {
+					message.success(data.message, 2, () => {
+						form.resetFields()
+					})
+				} else {
+					message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => {})
+				}
 			})
 			.catch((error) => {
-				// Xử lý lỗi nếu có
-				console.error('Error:', error)
+				message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => {})
 			})
 	}
 
@@ -121,7 +125,7 @@ function TamVang() {
 						const res = await axios.post(`${API_URL}/resident/checkIdentityCard`, { chungMinhThu: cmt })
 						console.log(res)
 						if (res.status === 201) {
-							setResidentId(res.data[0].ID)
+							setResidentId(res.data[0].idNhanKhau)
 							setDisplayName(res.data[0].hoTen)
 							setInputStatus(true)
 						}
@@ -134,7 +138,7 @@ function TamVang() {
 				Check
 			</Button>
 			{residentId && (
-				<Form.Item label='Tên'>
+				<Form.Item label='Họ và tên'>
 					<Input disabled value={displayName} />
 				</Form.Item>
 			)}
@@ -144,7 +148,7 @@ function TamVang() {
 				rules={[
 					{
 						required: true,
-						message: 'Please input your temporarily absent code!',
+						message: 'Hãy điền mã giấy tạm vắng của bạn!',
 					},
 				]}>
 				<Input />
@@ -156,7 +160,7 @@ function TamVang() {
 				rules={[
 					{
 						required: true,
-						message: 'Please input your temporary place!',
+						message: 'Hãy nhập nơi mà bạn sẽ chuyển đến!',
 					},
 				]}>
 				<Input />
@@ -186,7 +190,7 @@ function TamVang() {
 
 			<Form.Item {...tailFormItemLayout}>
 				<Button type='primary' htmlType='submit'>
-					Register
+					Đăng ký
 				</Button>
 			</Form.Item>
 		</Form>

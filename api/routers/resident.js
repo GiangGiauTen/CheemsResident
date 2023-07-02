@@ -3,6 +3,8 @@ const { AddNewResident } = require('../controller/Resident/AddNewResident.js')
 const { getAllResident } = require('../controller/Resident/Resident.js')
 const { CheckIdentityCard } = require('../controller/Resident/CheckIdentityCard.js')
 const { AbsentRegister } = require('../controller/Resident/AbsentRegister.js')
+const { TemporaryResidentRegister } = require('../controller/Resident/TemporaryResidentRegister.js')
+const { DeathNotify } = require('../controller/Resident/DeathNotify.js')
 const router = express.Router()
 
 module.exports = (connection) => {
@@ -37,5 +39,16 @@ module.exports = (connection) => {
 	router.post('/absentRegister', async (req, res) => {
 		await AbsentRegister(req.body, connection, res)
 	})
+
+	// POST /api/resident/temporaryResident
+	router.post('/temporaryResident', async (req, res) => {
+		await TemporaryResidentRegister(req.body, connection, res)
+	})
+
+	// POST /api/resident/deathNotify
+	router.post('/deathNotify', async (req, res) => {
+		await DeathNotify(req.body, connection, res)
+	})
+
 	return router
 }

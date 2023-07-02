@@ -50,60 +50,6 @@ CREATE TABLE `dinh_chinh` (
   `nguoiThayDoi` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `gia_dinh`
---
-
-CREATE TABLE `gia_dinh` (
-  `ID` int(11) NOT NULL,
-  `idNhanKhau` int(11) DEFAULT NULL,
-  `hoTen` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `namSinh` date DEFAULT NULL,
-  `gioiTinh` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `quanHeVoiNhanKhau` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ngheNghiep` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `diaChiHienTai` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `gia_dinh`
---
-
-INSERT INTO `gia_dinh` (`ID`, `idNhanKhau`, `hoTen`, `namSinh`, `gioiTinh`, `quanHeVoiNhanKhau`, `ngheNghiep`, `diaChiHienTai`) VALUES
-(2, 27, 'Nguyễn Minh Quân', '1995-05-31', 'Nam', 'Chồng', 'Kỹ sư', 'Số 2 Tạ Quang Bửu, Hai Bà Trưng, Hà Nội'),
-(3, 28, 'Trần Thanh Duyên', '1997-12-23', 'Nữ', 'Vợ', 'Nhân viên văn phòng', 'Số 2 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(4, 29, 'Vũ Mỹ Linh', '1965-12-06', 'Nữ', 'Vợ', 'Nội trợ', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(5, 29, 'Nguyễn Tiến Đạt', '1990-09-09', 'Nam', 'Con trai', 'Kỹ sư điện', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(6, 29, 'Nguyễn Trà My', '1997-12-12', 'Nữ', 'Con gái', 'Luật sư', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(7, 30, 'Nguyễn Tiến Dũng', '1964-06-03', 'Nam', 'Chồng', 'Phó giám đốc', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(8, 30, 'Nguyễn Tiến Đạt', '1990-09-09', 'Nam', 'Con trai', 'Kỹ sư điện', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(9, 30, 'Nguyễn Trà My', '1997-12-12', 'Nữ', 'Con Gái', 'Luật sư', ''),
-(10, 31, 'Nguyễn Tiến Dũng', '1964-06-03', 'Nam', 'Bố', 'Phó giám đốc', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(11, 31, 'Vũ Mỹ Linh', '1965-12-06', 'Nữ', 'Mẹ', 'Nội trợ', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(12, 31, 'Nguyễn Trà My', '1997-12-12', 'Nữ', 'Em gái', 'Luật sư', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(13, 32, 'Nguyễn Tiến Dũng', '1964-06-03', 'Nam', 'Bố', 'Phó giám đốc', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(14, 32, 'Vũ Mỹ Linh', '1965-12-06', 'Nữ', 'Mẹ', 'Nội trợ', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(15, 32, 'Nguyễn Tiến Đạt', '1990-09-09', 'Nam', 'Anh trai', 'Kỹ sư điện', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(16, 33, 'Nguyễn Minh Tuyết', '1985-09-02', 'Nữ', 'Vợ', 'Bác sĩ', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(17, 33, 'Trần Trung Kiên', '2008-12-25', 'Nam', 'Con trai', 'Học sinh', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(18, 33, 'Trần Thúy Ngọc', '2013-01-15', 'Nữ', 'Con gái', 'Học sinh', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(19, 34, 'Trần Trung Kiên', '2008-12-25', 'Nam', 'Con trai', 'Học sinh', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(20, 34, 'Trần Thúy Ngọc', '2013-01-15', 'Nữ', 'Con gái', 'Học sinh', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(21, 34, 'Trần Văn Nam', '1980-07-09', 'Nam', 'Chồng', 'Giảng viên đại học', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(22, 35, 'Trần Văn Nam', '1980-07-09', 'Nam', 'Bố', 'Giảng viên đại học', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(23, 35, 'Nguyễn Minh Tuyết', '1985-09-02', 'Nữ', 'Mẹ', 'Bác sĩ', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(24, 35, 'Trần Thúy Ngọc', '2013-01-15', 'Nữ', 'Em gái', 'Học sinh', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(25, 36, 'Trần Văn Nam', '1980-07-09', 'Nam', 'Bố', 'Giảng viên đại học', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(26, 36, 'Nguyễn Minh Tuyết', '1985-09-02', 'Nữ ', 'Mẹ', 'Bác sĩ', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(27, 36, 'Trần Trung Kiên', '2008-12-25', 'Nam', 'Anh trai', 'Học sinh', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(28, 37, 'Bùi Thị Hà', '1948-02-03', 'Nữ', 'Vợ', 'Nội trợ', 'Số 5 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(29, 37, 'Lý Thành Nam', '1968-06-12', 'Nam', 'Con Trai', 'Công nhân', 'Số 89, ngõ 98 Trường Chinh, Hà Nội'),
-(30, 37, 'Lý Thu Thủy', '1971-03-05', 'Nữ', 'Con Gái', 'Nhân viên văn phòng', 'Số 3, ngõ 568 Đường Láng, Hà Nội'),
-(31, 38, 'Lý Văn Công', '1945-06-04', 'Nam', 'Chồng', 'Bộ đội về hưu', 'Số 5 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội'),
-(32, 38, 'Lý Thành Nam', '1968-06-12', 'Nam', 'Con trai', 'Công nhân', 'Số 89, ngõ 98 Trường Chinh, Hà Nội'),
-(33, 38, 'Lý Thu Thủy', '1971-03-05', 'Nữ', 'Con gái', 'Nhân viên văn phòng', 'Số 3, ngõ 568 Đường Láng, Hà Nội');
 
 -- --------------------------------------------------------
 
@@ -112,7 +58,7 @@ INSERT INTO `gia_dinh` (`ID`, `idNhanKhau`, `hoTen`, `namSinh`, `gioiTinh`, `qua
 --
 
 CREATE TABLE `ho_khau` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL PRIMARY KEY,
   `maHoKhau` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `idChuHo` int(11) DEFAULT NULL,
   `maKhuVuc` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -132,6 +78,18 @@ INSERT INTO `ho_khau` (`ID`, `maHoKhau`, `idChuHo`, `maKhuVuc`, `diaChi`, `ngayL
 (14, 'TQB001', 26, 'HN03', 'Số 1 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', '2019-12-08', NULL, NULL, NULL),
 (15, 'TQB003', 29, 'HN03', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', '2019-12-08', NULL, NULL, NULL),
 (16, 'TQB004', 33, 'HN03', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', '2019-12-08', NULL, NULL, NULL);
+
+CREATE TABLE `nhom_ho_khau` (
+  `ID` int(11) NOT NULL,
+  `idHoKhau` int(11) NOT NULL,
+  FOREIGN KEY (`idHoKhau`) REFERENCES `ho_khau`(`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO  `nhom_ho_khau` (`ID`, `idHoKhau`) VALUES 
+(1, 13),
+(2, 14),
+(2, 15),
+(4, 16);
 
 -- --------------------------------------------------------
 
@@ -194,10 +152,10 @@ INSERT INTO `tham_gia_cuoc_hop` (`idNhanKhau`, `idCuocHop`) VALUES
 --
 
 CREATE TABLE `khai_tu` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `soGiayKhaiTu` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `idNguoiKhai` int(11) DEFAULT NULL,
-  `idNguoiChet` int(11) DEFAULT NULL,
+  `idNguoiChet` int(11) DEFAULT NULL UNIQUE,
   `ngayKhai` date DEFAULT NULL,
   `ngayChet` date DEFAULT NULL,
   `lyDoChet` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL
@@ -397,18 +355,11 @@ ALTER TABLE `dinh_chinh`
   ADD KEY `idHoKhau` (`idHoKhau`),
   ADD KEY `nguoiThayDoi` (`nguoiThayDoi`);
 
---
--- Chỉ mục cho bảng `gia_dinh`
---
-ALTER TABLE `gia_dinh`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `idNhanKhau` (`idNhanKhau`);
 
 --
 -- Chỉ mục cho bảng `ho_khau`
 --
 ALTER TABLE `ho_khau`
-  ADD PRIMARY KEY (`ID`),
   ADD KEY `idChuHo` (`idChuHo`);
 ALTER TABLE `ho_khau` ADD FULLTEXT KEY `maHoKhau` (`maHoKhau`);
 
@@ -420,13 +371,6 @@ ALTER TABLE `cuoc_hop`
   ADD KEY `idNguoiTaoCuocHop` (`idNguoiTaoCuocHop`);
 ALTER TABLE `cuoc_hop` ADD FULLTEXT KEY `maCuocHop` (`maCuocHop`);
 
---
--- Chỉ mục cho bảng `khai_tu`
---
-ALTER TABLE `khai_tu`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `idNguoiKhai` (`idNguoiKhai`),
-  ADD KEY `idNguoiChet` (`idNguoiChet`);
 
 --
 -- Chỉ mục cho bảng `nhan_khau`
@@ -479,29 +423,12 @@ ALTER TABLE `chung_minh_thu`
 ALTER TABLE `dinh_chinh`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT cho bảng `gia_dinh`
---
-ALTER TABLE `gia_dinh`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
-
---
--- AUTO_INCREMENT cho bảng `ho_khau`
---
-ALTER TABLE `ho_khau`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT cho bảng `cuoc_hop`
 --
 ALTER TABLE `cuoc_hop`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT cho bảng `khai_tu`
---
-ALTER TABLE `khai_tu`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `nhan_khau`
@@ -537,12 +464,6 @@ ALTER TABLE `chung_minh_thu`
 ALTER TABLE `dinh_chinh`
   ADD CONSTRAINT `dinh_chinh_ibfk_1` FOREIGN KEY (`idHoKhau`) REFERENCES `ho_khau` (`ID`),
   ADD CONSTRAINT `dinh_chinh_ibfk_2` FOREIGN KEY (`nguoiThayDoi`) REFERENCES `users` (`ID`);
-
---
--- Các ràng buộc cho bảng `gia_dinh`
---
-ALTER TABLE `gia_dinh`
-  ADD CONSTRAINT `gia_dinh_ibfk_1` FOREIGN KEY (`idNhanKhau`) REFERENCES `nhan_khau` (`ID`);
 
 --
 -- Các ràng buộc cho bảng `ho_khau`
