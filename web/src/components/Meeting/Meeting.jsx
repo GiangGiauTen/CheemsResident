@@ -66,15 +66,6 @@ const Meeting = () => {
   };
   // Hàm thêm người tham gia
   const addParticipant = () => {
-    // const newParticipant = {
-    //   hoTen: '',
-    //   birthdate: '',
-    //   gioiTinh: '',
-    // };
-    // setSelectedRowData(prevMeeting => ({
-    //   ...prevMeeting,
-    //   nguoiThamGia: [...prevMeeting.nguoiThamGia, newParticipant],
-    // }));
     setIsAddParticipantFormVisible(!isAddParticipantFormVisible);
   };
 
