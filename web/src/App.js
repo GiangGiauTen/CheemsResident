@@ -7,7 +7,6 @@ import {
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import AddMeeting from './components/Meeting/AddMeeting';
-import EditMeeting from './components/Meeting/EditMeeting';
 import Resident from './components/Resident/Resident';
 import HouseHold from './components/HouseHold/HouseHold';
 import TamTru from './components/Resident/TamTru/TamTru';
@@ -47,7 +46,6 @@ const items = [
   getItem('Quản lý cuộc họp', '_4', <ContactsOutlined />, [
     getItem('Danh sách', '4'),
     getItem('Thêm mới', '41'),
-    getItem('Sửa', '42'),
   ]),
 ];
 const App = () => {
@@ -149,11 +147,6 @@ const App = () => {
           {menuKey === "41" && (
             <div>
               <AddMeeting />
-            </div>
-          )}
-          {menuKey === "42" && (
-            <div>
-              <EditMeeting />
             </div>
           )}
         </Content>
