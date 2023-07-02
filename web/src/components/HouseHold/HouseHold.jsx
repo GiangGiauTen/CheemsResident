@@ -5,32 +5,12 @@ import axios from 'axios';
 
 const { Search } = Input;
 
-const data = [
-  {
-    ID: 14,
-    maHoKhau: 'TQB001',
-    idChuHo: 26,
-    maKhuVuc: 'HN03',
-    diaChi: 'Số 1 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội',
-    ngayLap: '2019-12-07T17:00:00.000Z',
-    ngayChuyenDi: null,
-    lyDoChuyen: null,
-    nguoiThucHien: null,
-    householdMembers: [
-      {
-        idNhanKhau: 26,
-        quanHeVoiChuHo: 'Chủ hộ',
-      }
-    ]
-  },
-  // Other data objects...
-];
-
 
 function HouseHold() {
   const [searchText, setSearchText] = useState('');
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [householdData, setHouseholddata] = useState([]);
   // Return table with columns that are maHoKhau, idChuHo, diaChi
   const handleSearch = (value) => {
     setSearchText(value);
@@ -48,14 +28,14 @@ function HouseHold() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:4001/api/resident/');
+        const response = await axios.get('http://localhost:4001/api/household/');
         if (response.status === 200) {
           const resData = response.data.map(e => {
             e['key'] = e['ID'];
             e['ngayLap'] = (new Date(e['ngayLap'])).toLocaleDateString('vi-VN');
             return e;
           });
-          // setResidentData(resData);
+          setHouseholddata(resData);
         }
       } catch (error) {
         console.error(error);
@@ -72,8 +52,8 @@ function HouseHold() {
     },
     {
       title: 'Chủ hộ',
-      dataIndex: 'idChuHo',
-      key: 'idChuHo',
+      dataIndex: 'chuHo',
+      key: 'chuHo',
     },
     {
       title: 'Địa chỉ',
@@ -82,12 +62,12 @@ function HouseHold() {
     },
   ];
   const filteredData = searchText
-    ? data.filter((record) =>
+    ? householdData.filter((record) =>
       columns.some((column) =>
         record[column.dataIndex].toString().toLowerCase().includes(searchText.toLowerCase())
       )
     )
-    : data;
+    : householdData;
   return (
     <div>
       <Search
@@ -108,7 +88,7 @@ function HouseHold() {
               <strong>Mã hộ khẩu: </strong> {selectedRowData.maHoKhau}
             </p>
             <p>
-              <strong>Chủ hộ: </strong> {selectedRowData.idChuHo}
+              <strong>Chủ hộ: </strong> {selectedRowData.chuHo}
             </p>
             <p>
               <strong>Địa chỉ: </strong> {selectedRowData.diaChi}
@@ -122,9 +102,9 @@ function HouseHold() {
             <Table
               columns={[
                 {
-                  title: 'ID',
-                  dataIndex: 'idNhanKhau',
-                  key: 'idNhanKhau',
+                  title: 'Họ Tên',
+                  dataIndex: 'hoTen',
+                  key: 'hoTen',
                 },
                 {
                   title: 'Quan hệ với chủ hộ',

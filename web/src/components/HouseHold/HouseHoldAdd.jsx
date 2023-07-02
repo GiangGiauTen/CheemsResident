@@ -1,170 +1,80 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Table, Modal, Select, AutoComplete } from 'antd';
-
-const { Search } = Input;
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Modal, Select, AutoComplete, DatePicker } from 'antd';
+import axios from 'axios';
+import API_URL from '../../utils/config';
 
 const { Option } = Select;
 
-const data = [
-    {
-        hokhauId: 'TQB003',
-        hokhauChuHo: 'Nguyễn Văn A',
-        hokhauDiaChi: 'Số 1, đường 1, phường 1, quận 1, TP.HCM',
-        hokhauNgaylap: '01/01/2021',
-        lanthamgiahop: 2,
-        danhsachthanhvien: [
-            {
-                id: 1,
-                hoten: 'Nguyễn Văn A',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nam',
-                quanhe: 'Chủ hộ',
-            },
-            {
-                id: 2,
-                hoten: 'Nguyễn Thị B',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nữ',
-                quanhe: 'Vợ',
-            },
-            {
-                id: 3,
-                hoten: 'Nguyễn Văn C',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nam',
-                quanhe: 'Con',
-            }
-        ]
-    },
-    {
-        hokhauId: 'TQB004',
-        hokhauChuHo: 'Nguyễn Văn B',
-        hokhauDiaChi: 'Số 2, đường 2, phường 2, quận 2, TP.HCM',
-        hokhauNgaylap: '01/01/2021',
-        lanthamgiahop: 3,
-        danhsachthanhvien: [
-            {
-                id: 4,
-                hoten: 'Nguyễn Văn B',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nam',
-                quanhe: 'Chủ hộ',
-            },
-            {
-                id: 5,
-                hoten: 'Nguyễn Thị C',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nữ',
-                quanhe: 'Vợ',
-            },
-            {
-                id: 6,
-                hoten: 'Nguyễn Văn D',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nam',
-                quanhe: 'Con',
-            },
-            {
-                id: 7,
-                hoten: 'Nguyễn Văn E',
-                ngaysinh: '01/01/1990',
-                gioitinh: 'Nam',
-                quanhe: 'Con',
-            }
-        ]
-    }
-];
-
-const moreData = [
-    {
-        id: 4,
-        hoten: 'Nguyễn Văn B',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Chủ hộ',
-    },
-    {
-        id: 5,
-        hoten: 'Nguyễn Thị C',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nữ',
-        quanhe: 'Vợ',
-    },
-    {
-        id: 6,
-        hoten: 'Nguyễn Văn D',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Con',
-    },
-    {
-        id: 7,
-        hoten: 'Nguyễn Văn E',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Con',
-    },
-    {
-        id: 6,
-        hoten: 'Nguyễn Văn F',
-        ngaysinh: '06/06/1990',
-        gioitinh: 'Nam',
-        quanhe: null,
-    },
-    {
-        id: 7,
-        hoten: 'Nguyễn Thị G',
-        ngaysinh: '07/07/1990',
-        gioitinh: 'Nữ',
-        quanhe: null,
-    },
-    {
-        id: 8,
-        hoten: 'Nguyễn Văn H',
-        ngaysinh: '08/08/1990',
-        gioitinh: 'Nam',
-        quanhe: null,
-    },
-];
-
-
-
 const HouseHoldAdd = () => {
+    // State hooks
     const [form] = Form.useForm();
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedChuHo, setSelectedChuHo] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [memberFormItems, setMemberFormItems] = useState([]);
+    const [residents, setResidents] = useState([]);
 
+    // Fetch residents data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4001/api/resident/');
+                if (response.status === 200) {
+                    const resData = response.data.map((e) => {
+                        e['key'] = e['ID'];
+                        return e;
+                    });
+                    setResidents(resData);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
 
+    // Other functions
     const handleSearch = (value) => {
         setSearchText(value);
-        // const filteredData = moreData.filter((member) =>
-        //     member.hoten.toLowerCase().includes(value.toLowerCase())
-        // );
-        // setSearchedData(filteredData);
-    };
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleModalCancel = () => {
-        setIsModalVisible(false);
     };
 
     const handleSelectChuHo = (record) => {
         setSelectedChuHo(record);
     };
 
+    const FormatDate = (inputDate) => {
+        const date = new Date(inputDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    // Fix so it doesn't return undefined please :(
     const handleSubmit = (values) => {
-        console.log('Form values:', values);
+        values['ngayLap'] = FormatDate(values['ngayLap']['$d']);
+        // Gửi dữ liệu đi hoặc xử lý dữ liệu ở đây
+        console.log('Received values of form: ', values);
+        // Ví dụ: gửi dữ liệu đi qua API
+        fetch(`${API_URL}/household/add`, {
+            method: 'POST',
+            body: JSON.stringify(values),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                // Xử lý lỗi nếu có
+                console.error('Error:', error);
+            });
+        // Fix
+        console.log(values);
+
     };
 
-    const handleConfirmSelection = () => {
-        if (selectedChuHo) {
-            setIsModalVisible(false);
-        }
-    };
+
 
     const handleRemoveMemberFormItem = (index) => {
         setMemberFormItems((prevItems) => prevItems.filter((_, i) => i !== index));
@@ -173,14 +83,15 @@ const HouseHoldAdd = () => {
     const handleAddMemberFormItem = () => {
         const memberFormItem = (
             <div key={memberFormItems.length} style={{ display: 'flex', marginBottom: 8 }}>
-                <Form.Item style={{ width: '500px', marginRight: 8 }}
+                <Form.Item
+                    style={{ width: '500px', marginRight: 8 }}
                     name={['household', 'members', memberFormItems.length, 'hoten']}
                     label="Họ tên"
                     rules={[
                         { required: true, message: 'Vui lòng nhập họ tên' },
                         {
                             validator: (_, value) => {
-                                const exists = moreData.some((member) => member.hoten === value);
+                                const exists = residents.some((member) => member.hoTen === value);
                                 if (exists) {
                                     return Promise.resolve();
                                 }
@@ -190,26 +101,37 @@ const HouseHoldAdd = () => {
                     ]}
                 >
                     <AutoComplete
-                        options={moreData.map((member) => ({ value: member.hoten }))}
+                        options={residents.map((member) => ({ value: member.hoTen }))}
                         placeholder="Nhập họ tên"
+                        filterOption={(inputValue, option) =>
+                            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                        }
                     />
                 </Form.Item>
                 <Form.Item
-                    name={['household', 'members', memberFormItems.length, 'quanhevoichuho']}
-                    label="Quan hệ với chủ hộ"
-                    rules={[{ required: true, message: 'Vui lòng chọn quan hệ' }]}
-                    style={{ marginRight: 8 }}
+                    style={{ width: '200px', marginRight: 8 }}
+                    name={['household', 'members', memberFormItems.length, 'quanhe']}
+                    label="Quan hệ"
+                    rules={[{ required: true, message: 'Vui lòng nhập quan hệ' }]}
                 >
                     <Select placeholder="Chọn quan hệ">
-                        <Option value="Chủ hộ">Chủ hộ</Option>
-                        <Option value="Vợ">Vợ</Option>
                         <Option value="Con">Con</Option>
-                        <Option value="Khác">Khác</Option>
+                        <Option value="Vợ">Vợ</Option>
+                        <Option value="Chồng">Chồng</Option>
+                        <Option value="Bố">Bố</Option>
+                        <Option value="Mẹ">Mẹ</Option>
+                        <Option value="Ông">Ông</Option>
+                        <Option value="Bà">Bà</Option>
                     </Select>
                 </Form.Item>
-                {moreData.length > memberFormItems.length && (
-                    <Button type="link" onClick={() => handleRemoveMemberFormItem(memberFormItems.length)}>
-                        Remove
+                {memberFormItems.length > 0 && (
+                    <Button
+                        type="primary"
+                        danger
+                        onClick={() => handleRemoveMemberFormItem(memberFormItems.length)}
+                        style={{ marginTop: '32px' }}
+                    >
+                        Xóa
                     </Button>
                 )}
             </div>
@@ -217,118 +139,52 @@ const HouseHoldAdd = () => {
         setMemberFormItems((prevItems) => [...prevItems, memberFormItem]);
     };
 
-
-
-    const columns = [
-        {
-            title: 'Họ tên',
-            dataIndex: 'hoten',
-        },
-        {
-            title: 'Ngày sinh',
-            dataIndex: 'ngaysinh',
-        },
-        {
-            title: 'Giới tính',
-            dataIndex: 'gioitinh',
-        },
-        {
-            title: 'Quan hệ với chủ hộ',
-            dataIndex: 'quanhe',
-        },
-    ];
-
-    const searchedData = moreData.filter((member) =>
-        member.hoten.toLowerCase().includes(searchText.toLowerCase())
-    );
-
     return (
         <div>
-            <h1>Thêm hộ khẩu</h1>
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                <Form.Item
-                    name={['household', 'mahoKhau']}
-                    label="Mã hộ khẩu"
-                    rules={[{ required: true, message: 'Vui lòng nhập mã hộ khẩu' }]}
-                >
+            <Form layout="vertical" form={form} onFinish={handleSubmit}>
+                <Form.Item name="maHoKhau" label="Mã hộ khẩu" rules={[{ required: true, message: 'Vui lòng nhập mã hộ khẩu' }]}>
                     <Input placeholder="Nhập mã hộ khẩu" />
                 </Form.Item>
-
-                <Form.Item
-                    name={['household', 'makhuVuc']}
-                    label="Mã khu vực"
-                    rules={[{ required: true, message: 'Vui lòng nhập mã khu vực' }]}
-                >
-                    <Input placeholder="Nhập mã khu vực" />
-                </Form.Item>
-
-                <Form.Item
-                    name={['household', 'diachi']}
-                    label="Địa chỉ"
-                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
-                >
+                <Form.Item name="diaChi" label="Địa chỉ" rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}>
                     <Input placeholder="Nhập địa chỉ" />
                 </Form.Item>
-
-                <Form.Item name={['household', 'chuHo']} label="Chủ hộ">
-                    <div style={{ border: '1px solid #ccc', padding: '8px', borderRadius: '4px' }}>
-                        {selectedChuHo ? (
-                            <div>
-                                <div>{selectedChuHo.hoten}</div>
-                                <div>Ngày sinh: {selectedChuHo.ngaysinh}</div>
-                                <div>ID: {selectedChuHo.id}</div>
-                            </div>
-                        ) : (
-                            <Button type="link" onClick={showModal}>
-                                Chọn chủ hộ
-                            </Button>
-                        )}
-                    </div>
+                <Form.Item
+                    name='ngayLap'
+                    label='Ngày tháng năm sinh'
+                    rules={[{ type: 'object', required: true, message: 'Hãy nhập ngày tháng năm sinh' }]}>
+                    <DatePicker
+                    />
                 </Form.Item>
-
-                {memberFormItems}
-                <Button type="dashed" onClick={handleAddMemberFormItem} style={{ marginBottom: 16 }}>
-                    Thêm thành viên
-                </Button>
-
-                <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Form.Item name="chuHo" label="Chủ hộ" rules={[{ required: true, message: 'Vui lòng chọn chủ hộ' }]}>
+                    <Select
+                        showSearch
+                        placeholder="Tìm kiếm chủ hộ"
+                        optionFilterProp="children"
+                        onSearch={handleSearch}
+                        onSelect={handleSelectChuHo}
+                        filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    >
+                        {residents.map((member) => (
+                            <Option key={member.idNhanKhau} value={member.hoTen}>
+                                {member.hoTen}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item label="Thành viên trong hộ" style={{ marginBottom: 0 }}>
+                    {memberFormItems}
+                </Form.Item>
+                <Form.Item>
+                    <Button type="dashed" onClick={handleAddMemberFormItem} style={{ width: '60%' }}>
+                        Thêm thành viên
+                    </Button>
+                </Form.Item>
+                <Form.Item>
                     <Button type="primary" htmlType="submit">
-                        Thêm
+                        Submit
                     </Button>
                 </Form.Item>
             </Form>
-
-            <Modal
-                title="Chọn chủ hộ"
-                visible={isModalVisible}
-                onCancel={handleModalCancel}
-                footer={[
-                    <Button key="back" onClick={handleModalCancel}>
-                        Hủy
-                    </Button>,
-                    <Button key="select" type="primary" onClick={handleConfirmSelection} disabled={!selectedChuHo}>
-                        Chọn
-                    </Button>,
-                ]}
-                width={800}
-            >
-                <Search
-                    placeholder="Tìm kiếm"
-                    value={searchText}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    style={{ marginBottom: 16 }}
-                />
-
-                <Table
-                    dataSource={searchedData}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="id"
-                    onRow={(record) => ({
-                        onClick: () => handleSelectChuHo(record),
-                    })}
-                />
-            </Modal>
         </div>
     );
 };
