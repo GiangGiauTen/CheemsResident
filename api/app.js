@@ -1,10 +1,10 @@
-const express = require("express")
-const mysql = require("mysql")
-const cors = require("cors")
-const app = express()
+const express = require("express");
+const mysql = require("mysql");
+const cors = require("cors");
+const app = express();
 
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -12,19 +12,21 @@ const connection = mysql.createConnection({
   user: "root",
   password: "",
   database: "cheemsresident",
-})
+});
 // Import your route files
-const residentRoute = require("./routers/resident")
-const meetingRoute = require("./routers/meeting")
+const residentRoute = require("./routers/resident");
+const meetingRoute = require("./routers/meeting");
+const householdRoute = require("./routers/household");
 // Import other route files as needed
 
 // Use the route files
-app.use("/api/resident", residentRoute(connection))
-app.use("/api/meeting", meetingRoute(connection))
+app.use("/api/resident", residentRoute(connection));
+app.use("/api/meeting", meetingRoute(connection));
+app.use("/api/household", householdRoute(connection));
 // Use other route files as needed
 
 // Start the server
-const port = 4001
+const port = 4001;
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
-})
+  console.log(`Server running on port ${port}`);
+});

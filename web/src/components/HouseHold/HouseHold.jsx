@@ -1,79 +1,29 @@
 import React from "react";
 import { Button, Input, Modal, Space, Table } from 'antd';
-import { useRef, useState } from 'react';
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const { Search } = Input;
 
 const data = [
   {
-    hokhauId: 'TQB003',
-    hokhauChuHo: 'Nguyễn Văn A',
-    hokhauDiaChi: 'Số 1, đường 1, phường 1, quận 1, TP.HCM',
-    hokhauNgaylap: '01/01/2021',
-    lanthamgiahop: 2,
-    danhsachthanhvien: [
+    ID: 14,
+    maHoKhau: 'TQB001',
+    idChuHo: 26,
+    maKhuVuc: 'HN03',
+    diaChi: 'Số 1 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội',
+    ngayLap: '2019-12-07T17:00:00.000Z',
+    ngayChuyenDi: null,
+    lyDoChuyen: null,
+    nguoiThucHien: null,
+    householdMembers: [
       {
-        id: 1,
-        hoten: 'Nguyễn Văn A',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Chủ hộ',
-      },
-      {
-        id: 2,
-        hoten: 'Nguyễn Thị B',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nữ',
-        quanhe: 'Vợ',
-      },
-      {
-        id: 3,
-        hoten: 'Nguyễn Văn C',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Con',
+        idNhanKhau: 26,
+        quanHeVoiChuHo: 'Chủ hộ',
       }
     ]
   },
-  {
-    hokhauId: 'TQB004',
-    hokhauChuHo: 'Nguyễn Văn B',
-    hokhauDiaChi: 'Số 2, đường 2, phường 2, quận 2, TP.HCM',
-    hokhauNgaylap: '01/01/2021',
-    lanthamgiahop: 3,
-    danhsachthanhvien: [
-      {
-        id: 4,
-        hoten: 'Nguyễn Văn B',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Chủ hộ',
-      },
-      {
-        id: 5,
-        hoten: 'Nguyễn Thị C',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nữ',
-        quanhe: 'Vợ',
-      },
-      {
-        id: 6,
-        hoten: 'Nguyễn Văn D',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Con',
-      },
-      {
-        id: 7,
-        hoten: 'Nguyễn Văn E',
-        ngaysinh: '01/01/1990',
-        gioitinh: 'Nam',
-        quanhe: 'Con',
-      }
-    ]
-  }
+  // Other data objects...
 ];
 
 
@@ -81,7 +31,7 @@ function HouseHold() {
   const [searchText, setSearchText] = useState('');
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // Return table with columns that are hokhauid, hokhauChuHo, hokhauDiaChi
+  // Return table with columns that are maHoKhau, idChuHo, diaChi
   const handleSearch = (value) => {
     setSearchText(value);
   };
@@ -94,21 +44,41 @@ function HouseHold() {
   const handleModalClose = () => {
     setIsModalVisible(false);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4001/api/resident/');
+        if (response.status === 200) {
+          const resData = response.data.map(e => {
+            e['key'] = e['ID'];
+            e['ngayLap'] = (new Date(e['ngayLap'])).toLocaleDateString('vi-VN');
+            return e;
+          });
+          // setResidentData(resData);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const columns = [
     {
-      title: 'Hộ khẩu ID',
-      dataIndex: 'hokhauId',
-      key: 'hokhauId',
+      title: 'Mã hộ khẩu',
+      dataIndex: 'maHoKhau',
+      key: 'maHoKhau',
     },
     {
       title: 'Chủ hộ',
-      dataIndex: 'hokhauChuHo',
-      key: 'hokhauChuHo',
+      dataIndex: 'idChuHo',
+      key: 'idChuHo',
     },
     {
       title: 'Địa chỉ',
-      dataIndex: 'hokhauDiaChi',
-      key: 'hokhauDiaChi',
+      dataIndex: 'diaChi',
+      key: 'diaChi',
     },
   ];
   const filteredData = searchText
@@ -135,52 +105,34 @@ function HouseHold() {
         {selectedRowData && (
           <div>
             <p>
-              <strong>Hộ khẩu ID: </strong> {selectedRowData.hokhauId}
+              <strong>Mã hộ khẩu: </strong> {selectedRowData.maHoKhau}
             </p>
             <p>
-              <strong>Chủ hộ: </strong> {selectedRowData.hokhauChuHo}
+              <strong>Chủ hộ: </strong> {selectedRowData.idChuHo}
             </p>
             <p>
-              <strong>Địa chỉ: </strong> {selectedRowData.hokhauDiaChi}
+              <strong>Địa chỉ: </strong> {selectedRowData.diaChi}
             </p>
             <p>
-              <strong>Ngày lập: </strong> {selectedRowData.hokhauNgaylap}
+              <strong>Ngày lập: </strong> {selectedRowData.ngayLap}
             </p>
             <p>
-              <strong>Lần tham gia họp: </strong> {selectedRowData.lanthamgiahop}
-            </p>
-            <p>
-              <strong>Danh sách thành viên: </strong>
+              <strong>Thành viên trong hộ khẩu: </strong>
             </p>
             <Table
               columns={[
                 {
                   title: 'ID',
-                  dataIndex: 'id',
-                  key: 'id',
+                  dataIndex: 'idNhanKhau',
+                  key: 'idNhanKhau',
                 },
                 {
-                  title: 'Họ tên',
-                  dataIndex: 'hoten',
-                  key: 'hoten',
-                },
-                {
-                  title: 'Ngày sinh',
-                  dataIndex: 'ngaysinh',
-                  key: 'ngaysinh',
-                },
-                {
-                  title: 'Giới tính',
-                  dataIndex: 'gioitinh',
-                  key: 'gioitinh',
-                },
-                {
-                  title: 'Quan hệ',
-                  dataIndex: 'quanhe',
-                  key: 'quanhe',
+                  title: 'Quan hệ với chủ hộ',
+                  dataIndex: 'quanHeVoiChuHo',
+                  key: 'quanHeVoiChuHo',
                 },
               ]}
-              dataSource={selectedRowData.danhsachthanhvien}
+              dataSource={selectedRowData.householdMembers}
               pagination={false}
             />
           </div>
