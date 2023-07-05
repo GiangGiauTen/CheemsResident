@@ -110,12 +110,12 @@ async function createNewHousehold(body, connection, res) {
                     });
                 }
 
-                res.status(200).json({ message: 'Household created successfully!' });
+                res.status(200).json({ message: 'Thêm hộ khẩu mới thành công!' });
             }
         });
     } catch (error) {
         console.error('Error creating household:', error);
-        res.status(500).json({ message: 'Failed to create household.' });
+        res.status(500).json({ message: 'Có lỗi xảy ra!' });
     }
 }
 
