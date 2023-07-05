@@ -122,7 +122,11 @@ INSERT INTO  `nhom_ho_khau` (`ID`, `idHoKhau`) VALUES
 (1, 13),
 (2, 14),
 (2, 15),
-(4, 16);
+(4, 16),
+(5, 1),
+(6, 2),
+(7, 3),
+(8, 4);
 
 -- --------------------------------------------------------
 
@@ -392,20 +396,9 @@ INSERT INTO `tieu_su` (`ID`, `idNhanKhau`, `tuNgay`, `denNgay`, `diaChi`, `ngheN
 (7, 32, '2015-09-05', '2019-09-05', 'Số 3 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', 'Sinh viên', 'Đại học Luật Hà Nội'),
 (8, 33, '1998-09-05', '2003-09-05', 'Số 66, ngõ 445 Nguyễn Khang, Cầu Giấy, Hà Nội', 'Sinh Vvên', 'Đại học Bách khoa Hà Nội'),
 (9, 33, '2003-10-03', '2018-08-06', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', 'Giảng viên', 'Đại học Công ngiệp Hà Nội'),
-(10, 1, '2003-09-05', '2011-02-03', 'Số 8 Khâm Thiên Đống Đa Hà Nội', 'Sinh viên', 'Đại học Thủy lợi'),
-(11, 2, '2011-10-03', '2015-02-01', 'Số 18 Định Công, Hà Nội', 'Bác sĩ nội trú', 'Bệnh viện Thanh Nhàn'),
-(12, 3, '1961-01-01', '1963-01-01', 'Không rõ', 'Bộ đội', 'Hà Nội'),
-(13, 4, '2015-09-05', '2015-09-05', 'Số 23, ngõ 56, Xuân thủy, Cầu Giấy, Hà Nội', 'Sinh Viên', 'Đại học Sư Phạm'),
-(14, 5, '2012-09-05', '2017-09-05', '556 La Thành, Hà Nội', 'Sinh Viên', 'Đại học Bách khoa Hà Nội'),
-(15, 6, '1989-05-10', '2000-08-25', 'Số 5 Nguyễn Khuyến, Hà Nội', 'Quản lý nhận sự', 'Công ty BCC'),
-(16, 7, '1987-05-23', '1997-03-01', 'Số 10 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', 'Nhân viên Tiệm sách', 'Công ty Zezs'),
-(17, 8, '2008-09-05', '2013-09-05', 'Số 12 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', 'Sinh viên', 'Đại học Bách khoa Hà Nội'),
-(18, 9, '2015-09-05', '2019-09-05', 'Số 13 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', 'Sinh viên', 'Đại học Luật Hà Nội'),
-(19, 10, '1998-09-05', '2003-09-05', 'Số 66, ngõ 445 Nguyễn Khang, Cầu Giấy, Hà Nội', 'Sinh Vvên', 'Đại học Bách khoa Hà Nội'),
-(20, 11, '2003-10-03', '2018-08-06', 'Số 4 Tạ Quang Bửu, quận Hai Bà Trưng, Hà Nội', 'Giảng viên', 'Đại học Công ngiệp Hà Nội'),
-(21, 12, '2003-09-05', '2011-09-05', 'Số 8 Tôn Thất Tùng, Hà Nội', 'Sinh viên', 'Đại học Y Hà Nội'),
-(22, 13, '2011-10-03', '2015-08-09', 'Số 8 Tôn Thất Tùng, Hà Nội', 'Bác sĩ nội trú', 'Bệnh viện Bạch Mai'),
-(23, 14, '1979-01-01', '1990-01-01', 'Không rõ', 'Công Nhân', 'Hà Nội');
+(10, 34, '2003-09-05', '2011-09-05', 'Số 8 Tôn Thất Tùng, Hà Nội', 'Sinh viên', 'Đại học Y Hà Nội'),
+(11, 34, '2011-10-03', '2015-08-09', 'Số 8 Tôn Thất Tùng, Hà Nội', 'Bác sĩ nội trú', 'Bệnh viện Bạch Mai'),
+(12, 37, '1961-01-01', '1963-01-01', 'Không rõ', 'Bộ đội', 'Hà Nội');
 
 -- --------------------------------------------------------
 
