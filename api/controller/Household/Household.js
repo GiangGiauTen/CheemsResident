@@ -43,7 +43,9 @@ async function getAllHousehold(connection) {
 
 		// Get name of chuHo
 		updatedResult.forEach((element) => {
-			const chuHoMember = element.householdMembers.find((member) => member.quanHeVoiChuHo === 'Chủ hộ')
+			const chuHoMember = element.householdMembers.find(
+				(member) => member.quanHeVoiChuHo === 'Chủ hộ' || member.quanHeVoiChuHo === 'Chủ Hộ',
+			)
 			element.chuHo = chuHoMember ? chuHoMember.hoTen : ''
 		})
 

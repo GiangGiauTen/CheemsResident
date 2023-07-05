@@ -3,6 +3,7 @@ async function getAllResident(connection, res) {
 		const query1 = `
       SELECT nhan_khau.*, chung_minh_thu.soCMT FROM nhan_khau 
       LEFT JOIN chung_minh_thu ON nhan_khau.ID = chung_minh_thu.idNhanKhau
+      WHERE ghiChu is NULL
     `
 
 		const result = await executeQuery(connection, query1)

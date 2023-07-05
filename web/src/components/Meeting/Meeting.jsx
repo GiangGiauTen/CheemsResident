@@ -415,7 +415,7 @@ const Meeting = () => {
           <Button
             onClick={() => handleDelete(selectedRowData.maCuocHop)}
             style={{ marginTop: '10px' }}>
-            Xóa Nhóm
+            Xóa Cuộc Họp
           </Button>
         </div>
       </Modal>
