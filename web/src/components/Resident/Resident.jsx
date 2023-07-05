@@ -158,7 +158,7 @@ const Resident = () => {
       dataIndex: 'key',
       key: 'key',
       width: '10%',
-      defaultSortOrder: 'descend',
+      defaultSortOrder: 'ascend',
       sorter: (a, b) => a.key - b.key,
     },
     {
