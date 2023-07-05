@@ -87,7 +87,7 @@ CREATE TABLE `dinh_chinh` (
 --
 
 CREATE TABLE `ho_khau` (
-  `ID` int(11) NOT NULL PRIMARY KEY,
+  `ID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `maHoKhau` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `idChuHo` int(11) DEFAULT NULL,
   `maKhuVuc` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -122,7 +122,11 @@ INSERT INTO  `nhom_ho_khau` (`ID`, `idHoKhau`) VALUES
 (1, 13),
 (2, 14),
 (2, 15),
-(4, 16);
+(4, 16),
+(5, 1),
+(6, 2),
+(7, 3),
+(8, 4);
 
 -- --------------------------------------------------------
 
