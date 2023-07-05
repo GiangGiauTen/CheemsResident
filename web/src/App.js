@@ -37,17 +37,17 @@ const items = [
     getItem('Đăng ký tạm trú', '13'),
     getItem('Khai tử', '14'),
   ]),
+  getItem('Hộ Khẩu', '_2', <HomeOutlined />, [
+    getItem('Danh sách', '2'),
+    getItem('Thêm mới', '21'),
+    /*  getItem('Tách hộ khẩu', '22'),
+      getItem('Chuyển đi', '23'),*/
+  ]),
   getItem('Thống kê', '3', <BarChartOutlined />),
   getItem('Quản lý cuộc họp', '_4', <ContactsOutlined />, [
     getItem('Danh sách', '4'),
     getItem('Thêm mới', '41'),
-  ]),
-  getItem('Hộ Khẩu', '_2', <HomeOutlined />, [
-    getItem('Danh sách', '2'),
-    getItem('Thêm mới', '21'),
-    getItem('Tách hộ khẩu', '22'),
-    getItem('Chuyển đi', '23'),
-  ]),
+  ])
 ];
 const App = () => {
   const [menuKey, setMenuKey] = useState('1');

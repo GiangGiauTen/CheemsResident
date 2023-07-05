@@ -297,13 +297,7 @@ const Add = () => {
       <Form.Item
         name="trinhDoNgoaiNgu"
         label="Trình độ ngoại ngữ"
-        rules={[
-          {
-            required: true,
-            message: 'Hãy nhập trình độ ngoại ngữ của bạn',
-            whitespace: true,
-          },
-        ]}>
+      >
         <Input />
       </Form.Item>
       <Form.Item
