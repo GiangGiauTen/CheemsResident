@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, DatePicker, Button, Table, Select } from 'antd';
+import { Form, Input, DatePicker, Button, Table, Select, message } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 const { TextArea } = Input;
@@ -94,11 +94,11 @@ const AddMeeting = () => {
       });
 
       if (response.ok) {
-        console.log('Meeting added successfully');
+        message.success('Thêm cuộc họp thành công', 2, () => { });
         form.resetFields();
         setMembers([]);
       } else {
-        console.error('Failed to add meeting');
+        message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => { });
       }
     } catch (error) {
       console.error('Error:', error);

@@ -357,7 +357,7 @@ INSERT INTO `thanh_vien_cua_ho` (`idNhanKhau`, `idHoKhau`, `quanHeVoiChuHo`) VAL
 (3,1,'Con gái'),
 (4,1,'Con Trai'),
 (26, 14, 'Chủ hộ'),
-(27, 13, 'Vợ'),
+(27, 13, 'Chủ Hộ'),
 (29, 15, 'Chủ hộ'),
 (30, 15, 'Vợ'),
 (31, 15, 'Con trai'),
