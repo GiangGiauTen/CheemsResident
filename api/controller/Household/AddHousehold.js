@@ -1,24 +1,30 @@
 
-function createNewHouseHold(body, connection) {
-    const { maHoKhau, diaChi, ngayLap, chuHo, thanhVien } = body;
-
-    connection.query(
+async function createNewHouseHold(body, connection) {
+    const { maHoKhau, diaChi, ngayLap, chuHo, household } = body;
+    console.log(body);/*
+    await connection.query(
         "INSERT INTO ho_khau (maHoKhau, idChuHo, diaChi, ngayLap) VALUES (?, ?, ?, ?)",
-        [maHoKhau, idChuHo, diaChi, ngayLap],
+        [maHoKhau, chuHo, diaChi, ngayLap],
         (err, result) => {
             if (err) {
                 console.log(err);
+                console.log(idHoKhau, chuHo);
             } else {
-                const idHoKhau = result.insertId; // Retrieve the insertId value
-                thanhVien.forEach((resident) => {
+                const idHoKhau = result.insertId;
+
+                connection.query(
+                    "INSERT INTO thanh_vien_cua_ho (idNhanKhau, idHoKhau, quanHeVoiChuHo) VALUES (?, ?, 'Chủ hộ')",
+                    [chuHo, idHoKhau]
+                );
+                household.members.forEach((resident) => {
                     connection.query(
                         "INSERT INTO thanh_vien_cua_ho (idNhanKhau, idHoKhau, quanHeVoiChuHo) VALUES (?, ?, ?)",
-                        [resident.idNhanKhau, idHoKhau, resident.quanHeVoiChuHo]
+                        [resident.ID, idHoKhau, resident.quanhe]
                     );
                 });
             }
         }
-    );
+    );*/
 }
 
 
