@@ -480,10 +480,12 @@ ALTER TABLE `tham_gia_cuoc_hop`
 
 --
 -- Chỉ mục cho bảng `tieu_su`
---
+  --
 ALTER TABLE `tieu_su`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `idNhanKhau` (`idNhanKhau`);
+  ADD KEY `idNhanKhau` (`idNhanKhau`),
+  MODIFY `ID` INT AUTO_INCREMENT;
+
 
 --
 -- Chỉ mục cho bảng `users`
