@@ -71,7 +71,7 @@ const Add = () => {
             form.resetFields();
           });
         } else {
-          message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => {});
+          message.error('Có lỗi xảy ra, vui lòng thử lại sau', 2, () => { });
         }
       })
 
@@ -239,10 +239,6 @@ const Add = () => {
         name="soCMT"
         label="Chứng minh thư/CCCD"
         rules={[
-          {
-            required: true,
-            message: 'Hãy nhập số chứng minh thư/CCCD',
-          },
           { min: 9, message: 'Hãy nhập đủ các số trên Chứng minh thư/CCCD' },
           {
             pattern: /^[0-9]+$/,
@@ -278,13 +274,7 @@ const Add = () => {
       <Form.Item
         name="trinhDoHocVan"
         label="Trình độ học vấn"
-        rules={[
-          {
-            required: true,
-            message: 'Hãy điền trình độ học vấn của bạn',
-            whitespace: true,
-          },
-        ]}>
+      >
         <Select placeholder="Hãy chọn trình độ học vấn của bạn">
           <Option value="9/12">9/12</Option>
           <Option value="12/12">12/12</Option>
@@ -301,13 +291,7 @@ const Add = () => {
       <Form.Item
         name="TrinhDoChuyenMon"
         label="Trình độ chuyên môn"
-        rules={[
-          {
-            required: true,
-            message: 'Hãy nhập trình độ chuyên môn của bạn',
-            whitespace: true,
-          },
-        ]}>
+      >
         <Input />
       </Form.Item>
       <Form.Item
@@ -325,25 +309,13 @@ const Add = () => {
       <Form.Item
         name="ngheNghiep"
         label="Nghề nghiệp"
-        rules={[
-          {
-            required: true,
-            message: 'Hãy nhập nghề nghiệp của bạn',
-            whitespace: true,
-          },
-        ]}>
+      >
         <Input />
       </Form.Item>
       <Form.Item
         name="noiLamViec"
         label="Nơi làm việc"
-        rules={[
-          {
-            required: true,
-            message: 'Hãy nhập nơi làm việc của bạn',
-            whitespace: true,
-          },
-        ]}>
+        q>
         <Input />
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
