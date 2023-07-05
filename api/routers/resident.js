@@ -1,6 +1,6 @@
 const express = require('express')
 const { AddNewResident } = require('../controller/Resident/AddNewResident.js')
-const { getAllResident } = require('../controller/Resident/Resident.js')
+const { getAllResident, getAllResidentWithoutHouseHold } = require('../controller/Resident/Resident.js')
 const { CheckIdentityCard } = require('../controller/Resident/CheckIdentityCard.js')
 const { AbsentRegister, GetAllAbsentRegister } = require('../controller/Resident/AbsentRegister.js')
 const {
@@ -12,25 +12,15 @@ const router = express.Router()
 
 module.exports = (connection) => {
 	// POST /api/resident/add
-	router.post('/add', (req, res) => {
-		const result = AddNewResident(req.body, connection)
-		if (result === true) {
-			res.status(201).json('User created successfully')
-		} else {
-			console.error('Error creating user')
-			res.status(500).json({ error: 'Internal server error' })
-		}
+	router.post('/add', async (req, res) => {
+		await AddNewResident(req.body, connection, res)
 	})
 	// GET /api/resident/
-	router.get('/', (req, res) => {
-		const result = getAllResident(connection, (error, result) => {
-			if (error) {
-				console.error('Error fetching data', error)
-				res.status(500).json({ error: 'Internal server error' })
-			} else {
-				res.status(200).json(result)
-			}
-		})
+	router.get('/', async (req, res) => {
+		await getAllResident(connection, res)
+	})
+	router.get('/residentsWithoutHouseHold', async (req, res) => {
+		await getAllResidentWithoutHouseHold(connection, res)
 	})
 
 	// POST /api/resident/checkIdentityCard
